@@ -1,0 +1,32 @@
+# 의존성
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# 빌드 산출물
+dist/
+build/
+out/
+*.egg-info/
+
+# 환경 변수 / 비밀
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# 로그 / 임시 파일
+*.log
+npm-debug.log*
+tmp/
+.cache/
+
+# 에디터 / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
