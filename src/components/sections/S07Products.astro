@@ -1,5 +1,478 @@
 ---
-import Placeholder from '../Placeholder.astro';
+// 07 상품 — 벤토 타일 4개 + 딸깍 멈추는 상품 다이얼. 가격은 src/data/products.ts에서만.
+import SectionHead from '../SectionHead.astro';
+import { products, productById, buildLabel, won, commonBadge, vatNote } from '../../data/products';
+
+const tiles = (['web-lite', 'auto', 'desk', 'full'] as const).map((id) => productById(id));
+const DETENT = 60; // 다이얼 한 칸 각도
+const start = -((products.length - 1) / 2) * DETENT;
 ---
 
-<Placeholder id="products" no="07" title="상품" note="벤토 그리드 4타일 + 상품 다이얼 (5단계)" />
+<section id="products" class="section products" aria-labelledby="products-title" data-products>
+  <div class="container">
+    <SectionHead
+      id="products"
+      label="07 / 상품"
+      title="필요한 만큼만 켭니다"
+      lead={`제작비 한 번, 월 운영비는 오픈 다음 달부터. 가격은 모두 ${vatNote}입니다.`}
+    />
+
+    <ul class="bento">
+      {tiles.map((p) => (
+        <li class={`tile t-${p.id}`} data-tile>
+          <div class="preview" aria-hidden="true" data-media={JSON.stringify(p.media)}>
+            {p.media.length > 0 ? (
+              p.media.map((src, i) => <img src={src} alt="" loading="lazy" class:list={{ on: i === 0 }} />)
+            ) : (
+              <div class={`schema s-${p.id}`}>
+                <i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+            )}
+            {p.media.length === 0 && <span class="tag-example">구성 도식</span>}
+          </div>
+          <div class="tile-body">
+            <h3>{p.name}</h3>
+            <p class="line">{p.line}</p>
+            <p class="price mono">
+              <strong>{buildLabel(p)}</strong>
+              <span>월 {won(p.monthly)} · {p.period}</span>
+            </p>
+            <span class="badge mono">{commonBadge}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <!-- 상품 다이얼 -->
+    <div class="dial-panel">
+      <div class="dial-col">
+        <div class="dial-wrap">
+          <svg class="dial-ticks" viewBox="0 0 220 220" aria-hidden="true">
+            {products.map((_, i) => (
+              <line x1="110" y1="8" x2="110" y2="22" transform={`rotate(${start + i * DETENT} 110 110)`} data-dtick />
+            ))}
+          </svg>
+          <div class="dial" data-dial role="presentation">
+            <div class="dial-rotor" data-dial-rotor><span></span></div>
+          </div>
+        </div>
+        <div class="dial-choices" role="radiogroup" aria-label="상품 선택">
+          {products.map((p, i) => (
+            <button type="button" role="radio" class="choice mono" aria-checked={i === 0 ? 'true' : 'false'} data-choice={i}>
+              {p.name.replace('노브 ', '')}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div class="readout" aria-live="polite">
+        {products.map((p, i) => (
+          <div class="spec" data-spec={i} hidden={i !== 0}>
+            <p class="spec-name">{p.name}</p>
+            <p class="spec-line">{p.line}</p>
+            <dl class="meters mono">
+              <div><dt>제작비</dt><dd>{buildLabel(p)}</dd></div>
+              <div><dt>월 운영비</dt><dd>{won(p.monthly)}</dd></div>
+              <div><dt>기간</dt><dd>{p.period}</dd></div>
+            </dl>
+            <ul class="inc">
+              {p.includes.map((x) => <li>{x}</li>)}
+              <li class="inc-badge">{commonBadge}</li>
+            </ul>
+          </div>
+        ))}
+        <p class="fine mono">{vatNote} · 월 운영비: 서버·도메인 유지, 장애 대응, 월 1회 소규모 수정 포함 · 기능 추가 별도 견적</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style define:vars={{ detent: `${DETENT}deg`, start: `${start}deg` }}>
+  .bento {
+    display: grid;
+    gap: 1rem;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 860px) {
+    .bento {
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+    }
+    .t-full {
+      grid-column: 2 / 4;
+      grid-row: 1 / 3;
+    }
+  }
+  .tile {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(21, 23, 27, 0.75);
+    overflow: hidden;
+    transition: border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+  }
+  @media (pointer: fine) {
+    .tile {
+      cursor: var(--cursor-scope);
+    }
+  }
+  .tile:hover {
+    border-color: rgba(255, 138, 31, 0.45);
+  }
+  .preview {
+    position: relative;
+    aspect-ratio: 16 / 7;
+    border-bottom: 1px solid var(--line);
+    background: #0e1013;
+    overflow: hidden;
+  }
+  .t-full .preview {
+    flex: 1;
+    aspect-ratio: auto;
+    min-height: 200px;
+  }
+  .preview img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity var(--dur-scene) var(--ease);
+  }
+  .preview img.on {
+    opacity: 1;
+  }
+  .preview .tag-example {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+  }
+
+  /* 실제 화면이 없을 때: 구성 도식 */
+  .schema {
+    position: absolute;
+    inset: 14% 8%;
+    display: grid;
+    gap: 6px;
+  }
+  .schema i {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #15171b;
+    transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+  }
+  .s-web-lite {
+    grid-template-rows: 1.4fr repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
+  }
+  .s-web-lite i:nth-child(1) { grid-column: 1 / 3; }
+  .s-web-lite i:nth-child(n + 4) { display: none; }
+  .s-auto {
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+  }
+  .s-auto i { height: 44%; border-radius: 999px; }
+  .s-auto i:nth-child(n + 5) { display: none; }
+  .s-desk {
+    grid-template-rows: repeat(5, 1fr);
+  }
+  .s-desk i:nth-child(n + 6) { display: none; }
+  .s-full {
+    grid-template-columns: 1fr 1.4fr;
+    grid-template-rows: repeat(3, 1fr);
+  }
+  .s-full i:nth-child(1) { grid-row: 1 / 4; }
+  .tile:hover .schema i,
+  .tile:focus-within .schema i {
+    animation: lit 1.2s var(--ease) infinite;
+  }
+  .schema i:nth-child(2) { animation-delay: 0.15s !important; }
+  .schema i:nth-child(3) { animation-delay: 0.3s !important; }
+  .schema i:nth-child(4) { animation-delay: 0.45s !important; }
+  .schema i:nth-child(5) { animation-delay: 0.6s !important; }
+  .schema i:nth-child(6) { animation-delay: 0.75s !important; }
+  @keyframes lit {
+    0%, 100% { border-color: var(--line); background: #15171b; }
+    30% { border-color: var(--signal); background: rgba(255, 138, 31, 0.12); }
+  }
+
+  .tile-body {
+    padding: 1.25rem;
+  }
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+  .line {
+    margin: 0.35rem 0 1rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+    margin: 0 0 0.9rem;
+  }
+  .price strong {
+    font-size: 1.5rem;
+    color: var(--text);
+  }
+  .price span {
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border: 1px solid rgba(61, 220, 151, 0.4);
+    border-radius: 4px;
+    color: var(--ok);
+    font-size: 0.6875rem;
+  }
+
+  /* 다이얼 패널 */
+  .dial-panel {
+    display: grid;
+    gap: 2rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(21, 23, 27, 0.75);
+  }
+  @media (min-width: 860px) {
+    .dial-panel {
+      grid-template-columns: 280px 1fr;
+      align-items: center;
+    }
+  }
+  .dial-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .dial-wrap {
+    position: relative;
+    width: 200px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+  }
+  .dial-ticks {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .dial-ticks line {
+    stroke: var(--line);
+    stroke-width: 3;
+    stroke-linecap: round;
+    transition: stroke var(--dur-fast) var(--ease);
+  }
+  .dial-ticks line:global(.on) {
+    stroke: var(--signal);
+  }
+  .dial {
+    width: 70%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #0f1013;
+    box-shadow: 0 0 0 1px var(--line), 0 16px 30px -10px rgba(0, 0, 0, 0.8);
+    touch-action: none;
+  }
+  @media (pointer: fine) {
+    .dial,
+    .dial :global(*) {
+      cursor: var(--cursor-scope);
+    }
+  }
+  .dial-rotor {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.12), transparent 60%),
+      conic-gradient(from 200deg, #3a3e45, #1c1e22, #34383e, #1a1c20, #3a3e45);
+    box-shadow: inset 0 2px 1px rgba(255, 255, 255, 0.1), inset 0 -6px 12px rgba(0, 0, 0, 0.5);
+    transform: rotate(var(--start));
+  }
+  .dial-rotor span {
+    position: absolute;
+    top: 9%;
+    left: 50%;
+    width: 4px;
+    height: 18%;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: var(--signal);
+  }
+  .dial-choices {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem;
+  }
+  .choice {
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: none;
+    color: var(--muted);
+    font-size: 0.6875rem;
+    transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  }
+  .choice[aria-checked='true'] {
+    color: var(--signal);
+    border-color: var(--signal);
+  }
+
+  .readout {
+    min-height: 300px;
+  }
+  .spec-name {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: var(--weight-strong);
+  }
+  .spec-line {
+    margin: 0.3rem 0 1.25rem;
+    color: var(--muted);
+  }
+  .meters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin: 0 0 1.25rem;
+  }
+  .meters div {
+    padding: 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #0e1013;
+  }
+  .meters dt {
+    font-size: 0.6875rem;
+    color: var(--muted);
+  }
+  .meters dd {
+    margin: 0.25rem 0 0;
+    font-size: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+    font-weight: 700;
+    color: var(--signal);
+    white-space: nowrap;
+  }
+  .inc {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9375rem;
+  }
+  .inc li::before {
+    content: '— ';
+    color: var(--muted);
+  }
+  .inc .inc-badge {
+    color: var(--ok);
+  }
+  .fine {
+    margin: 1.25rem 0 0;
+    font-size: 0.6875rem;
+    color: var(--muted);
+  }
+  @media (max-width: 767.98px) {
+    .meters {
+      grid-template-columns: 1fr 1fr;
+    }
+    .meters div:last-child {
+      grid-column: 1 / 3;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from '../../scripts/smooth';
+  import { Draggable } from 'gsap/Draggable';
+  import { canAnimate, EASE } from '../../scripts/motion';
+  import { products } from '../../data/products';
+
+  gsap.registerPlugin(Draggable);
+
+  const root = document.querySelector<HTMLElement>('[data-products]')!;
+  const rotor = root.querySelector<HTMLElement>('[data-dial-rotor]')!;
+  const dial = root.querySelector<HTMLElement>('[data-dial]')!;
+  const ticks = Array.from(root.querySelectorAll<SVGLineElement>('[data-dtick]'));
+  const choices = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-choice]'));
+  const specs = Array.from(root.querySelectorAll<HTMLElement>('[data-spec]'));
+
+  const N = products.length;
+  const DETENT = 60;
+  const START = -((N - 1) / 2) * DETENT;
+  const angles = Array.from({ length: N }, (_, i) => START + i * DETENT);
+  let current = -1;
+
+  function select(i: number, spin = true): void {
+    if (i === current) return;
+    current = i;
+    ticks.forEach((t, j) => t.classList.toggle('on', j === i));
+    choices.forEach((c, j) => c.setAttribute('aria-checked', String(j === i)));
+    specs.forEach((s, j) => (s.hidden = j !== i));
+    if (spin) gsap.to(rotor, { rotation: angles[i], duration: canAnimate() ? 0.35 : 0, ease: EASE });
+    if (canAnimate()) {
+      gsap.fromTo(specs[i].querySelectorAll('dd'), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.25, stagger: 0.05, ease: EASE });
+    }
+  }
+
+  gsap.set(rotor, { rotation: angles[0] });
+  select(0, false);
+
+  // 드래그 후 가장 가까운 칸에서 '딸깍' 멈춤
+  Draggable.create(rotor, {
+    type: 'rotation',
+    trigger: dial,
+    bounds: { minRotation: angles[0], maxRotation: angles[N - 1] },
+    onDrag() {
+      const i = Math.round((this.rotation - START) / DETENT);
+      if (i !== current) select(Math.max(0, Math.min(N - 1, i)), false);
+    },
+    onRelease() {
+      gsap.to(rotor, { rotation: angles[current], duration: 0.2, ease: EASE });
+    },
+  });
+
+  choices.forEach((c, i) => c.addEventListener('click', () => select(i)));
+  root.querySelector('.dial-choices')!.addEventListener('keydown', (e) => {
+    const k = (e as KeyboardEvent).key;
+    if (k !== 'ArrowRight' && k !== 'ArrowLeft') return;
+    e.preventDefault();
+    const n = (current + (k === 'ArrowRight' ? 1 : -1) + N) % N;
+    select(n);
+    choices[n].focus();
+  });
+
+  // 타일 호버: 실제 화면 이미지가 여러 장이면 슬라이드
+  root.querySelectorAll<HTMLElement>('[data-tile]').forEach((tile) => {
+    const imgs = tile.querySelectorAll('img');
+    if (imgs.length < 2) return;
+    let k = 0;
+    let timer = 0;
+    tile.addEventListener('mouseenter', () => {
+      timer = window.setInterval(() => {
+        imgs[k].classList.remove('on');
+        k = (k + 1) % imgs.length;
+        imgs[k].classList.add('on');
+      }, 1200);
+    });
+    tile.addEventListener('mouseleave', () => clearInterval(timer));
+  });
+</script>

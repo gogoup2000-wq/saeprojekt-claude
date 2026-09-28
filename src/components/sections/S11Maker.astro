@@ -1,5 +1,98 @@
 ---
-import Placeholder from '../Placeholder.astro';
+// 11 만든 사람 — 본문은 src/content/story.md 에서 불러온다.
+import SectionHead from '../SectionHead.astro';
+import { Content } from '../../content/story.md';
+
+const principles = [
+  { k: '먼저 써본 것만 판다', v: '우리 회사에서 돌려보지 않은 기능은 상품 목록에 올리지 않습니다.' },
+  { k: '화면이 아니라 일이 줄어야 한다', v: '납품 기준은 디자인 완성이 아니라, 대표가 하루에 손대는 일이 몇 개 줄었는가입니다.' },
+  { k: '대표가 직접 만질 수 있게', v: '개발자 호출 없이 문구·가격·담당자를 바꿀 수 있는 관리 화면을 기본으로 드립니다.' },
+];
 ---
 
-<Placeholder id="maker" no="11" title="만든 사람" note="브랜드 스토리 — src/content/story.md (5단계)" />
+<section id="maker" class="section maker" aria-labelledby="maker-title">
+  <div class="container grid">
+    <div>
+      <SectionHead id="maker" label="11 / 만든 사람" title="개발자 없이 회사를 굴려야 했던 대표가 만들었습니다" />
+      <div class="story reveal">
+        <Content />
+      </div>
+    </div>
+    <aside class="principles" aria-label="브랜드 원칙">
+      <p class="label">원칙</p>
+      <ol>
+        {principles.map((p, i) => (
+          <li class="reveal">
+            <span class="mono n">{String(i + 1).padStart(2, '0')}</span>
+            <strong>{p.k}</strong>
+            <p>{p.v}</p>
+          </li>
+        ))}
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 960px) {
+    .grid {
+      grid-template-columns: 1.3fr 1fr;
+      gap: 5rem;
+    }
+  }
+  .story {
+    max-width: 36rem;
+    font-size: 1.0625rem;
+    line-height: 1.85;
+  }
+  .story :global(p) {
+    margin: 0 0 1.1rem;
+    color: #c9ccd1;
+  }
+  .story :global(p:first-child) {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .story :global(strong) {
+    color: var(--text);
+  }
+  .principles {
+    align-self: start;
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(21, 23, 27, 0.75);
+  }
+  @media (min-width: 960px) {
+    .principles {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  ol {
+    display: grid;
+    gap: 1.25rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .n {
+    display: block;
+    font-size: var(--fs-label);
+    color: var(--signal);
+  }
+  strong {
+    display: block;
+    margin: 0.2rem 0;
+    font-size: 1.0625rem;
+  }
+  li p {
+    margin: 0;
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+</style>

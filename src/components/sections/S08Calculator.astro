@@ -1,5 +1,328 @@
 ---
-import Placeholder from '../Placeholder.astro';
+// 08 비용 계산기 — 월 수작업 비용 vs 노브 비용, 제작비 회수 개월 수
+import SectionHead from '../SectionHead.astro';
+import { products } from '../../data/products';
+
+const DAYS = 22;
+const sliders = [
+  { id: 'people', label: '문의 처리 인원', min: 1, max: 10, step: 1, value: 2, unit: '명' },
+  { id: 'hours', label: '1인당 하루 수작업 시간', min: 0.5, max: 6, step: 0.5, value: 2, unit: '시간' },
+  { id: 'wage', label: '시급', min: 10000, max: 30000, step: 1000, value: 12000, unit: '원' },
+  { id: 'rate', label: '자동화로 줄어드는 비율 (가정)', min: 30, max: 80, step: 5, value: 50, unit: '%' },
+];
 ---
 
-<Placeholder id="calculator" no="08" title="비용 계산기" note="월 수작업 비용 vs 노브 비용, 회수 개월 수 (5단계)" />
+<section id="calculator" class="section calc" aria-labelledby="calculator-title" data-calc>
+  <div class="container">
+    <SectionHead
+      id="calculator"
+      label="08 / 비용 계산기"
+      title="사람 한 명 더 뽑는 값과 비교해 보세요"
+      lead={`우리 회사 숫자를 넣어보세요. 월 근무일은 ${DAYS}일로 계산합니다.`}
+    />
+
+    <div class="grid">
+      <form class="inputs" data-calc-form onsubmit="return false">
+        {sliders.map((s) => (
+          <label class="slider">
+            <span class="s-head">
+              <span>{s.label}</span>
+              <output class="mono" data-out={s.id}>{s.value.toLocaleString('ko-KR')}{s.unit}</output>
+            </span>
+            <input type="range" name={s.id} min={s.min} max={s.max} step={s.step} value={s.value} data-unit={s.unit} />
+          </label>
+        ))}
+        <fieldset class="pick">
+          <legend>비교할 상품</legend>
+          <div class="pick-row">
+            {products.map((p) => (
+              <label class="pill mono">
+                <input type="radio" name="product" value={p.id} checked={p.id === 'auto'} />
+                <span>{p.name.replace('노브 ', '')}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      </form>
+
+      <div class="panel" aria-live="polite">
+        <div class="big">
+          <span class="k">지금 월 수작업 비용</span>
+          <strong class="mono" data-r="manual">0</strong>
+          <span class="f mono" data-r="formula"></span>
+        </div>
+        <dl class="rows mono">
+          <div><dt>자동화로 줄어드는 비용 (월)</dt><dd data-r="saved">0</dd></div>
+          <div><dt>노브 월 운영비</dt><dd data-r="fee">0</dd></div>
+          <div class="net"><dt>월 순절감</dt><dd data-r="net">0</dd></div>
+          <div><dt>제작비</dt><dd data-r="build">0</dd></div>
+        </dl>
+        <div class="payback">
+          <span class="k">제작비 회수</span>
+          <strong class="mono" data-r="payback">-</strong>
+        </div>
+        <p class="fine">절감 비율은 가정값입니다. 실제 효과는 오픈 30일 성과 리포트로 확인해 드립니다.</p>
+        <a href="#diagnosis" class="go" data-calc-go>이 숫자로 상담받기 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .inputs,
+  .panel {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(21, 23, 27, 0.75);
+  }
+  .inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .slider {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .s-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.9375rem;
+  }
+  .s-head output {
+    color: var(--signal);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  input[type='range'] {
+    --p: 50%;
+    width: 100%;
+    height: 28px;
+    margin: 0;
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--signal) var(--p), var(--line) var(--p));
+  }
+  input[type='range']::-moz-range-track {
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--signal) var(--p), var(--line) var(--p));
+  }
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    margin-top: -9px;
+    border: 3px solid var(--bg);
+    border-radius: 50%;
+    background: var(--text);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+  input[type='range']::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: 3px solid var(--bg);
+    border-radius: 50%;
+    background: var(--text);
+  }
+  .pick {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  legend {
+    margin-bottom: 0.6rem;
+    font-size: 0.9375rem;
+  }
+  .pick-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .pill input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .pill span {
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: var(--fs-label);
+    color: var(--muted);
+    cursor: pointer;
+    transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  }
+  .pill input:checked + span {
+    color: var(--signal);
+    border-color: var(--signal);
+  }
+  .pill input:focus-visible + span {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .k {
+    display: block;
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+  .big strong {
+    display: block;
+    margin: 0.2rem 0;
+    font-size: clamp(2.25rem, 1.5rem + 3vw, 3.5rem);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .f {
+    font-size: var(--fs-label);
+    color: var(--muted);
+  }
+  .rows {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+  .rows div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .rows dt {
+    font-family: var(--font-sans);
+    color: var(--muted);
+  }
+  .rows dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .net dd {
+    color: var(--ok);
+    font-weight: 700;
+  }
+  .payback strong {
+    display: block;
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+    color: var(--signal);
+  }
+  .fine {
+    margin: 0;
+    font-size: var(--fs-label);
+    color: var(--muted);
+  }
+  .go {
+    align-self: flex-start;
+    padding: 0.8rem 1.3rem;
+    border-radius: 999px;
+    background: var(--signal);
+    color: #111;
+    font-weight: 700;
+  }
+</style>
+
+<script>
+  import { gsap, scrollToTarget } from '../../scripts/smooth';
+  import { canAnimate } from '../../scripts/motion';
+  import { products, type ProductId } from '../../data/products';
+
+  const DAYS = 22;
+  const root = document.querySelector<HTMLElement>('[data-calc]')!;
+  const form = root.querySelector<HTMLFormElement>('[data-calc-form]')!;
+  const r = (k: string) => root.querySelector<HTMLElement>(`[data-r="${k}"]`)!;
+  const krw = (n: number) => `${Math.round(n).toLocaleString('ko-KR')}원`;
+
+  // 숫자가 계기판처럼 굴러가며 바뀜
+  const shown: Record<string, number> = {};
+  function roll(key: string, value: number): void {
+    const el = r(key);
+    if (!canAnimate()) {
+      el.textContent = krw(value);
+      shown[key] = value;
+      return;
+    }
+    const o = { n: shown[key] ?? 0 };
+    shown[key] = value;
+    gsap.to(o, { n: value, duration: 0.45, ease: 'power2.out', overwrite: 'auto', onUpdate: () => (el.textContent = krw(o.n)) });
+  }
+
+  function read() {
+    const d = new FormData(form);
+    const num = (k: string) => Number(d.get(k));
+    return {
+      people: num('people'),
+      hours: num('hours'),
+      wage: num('wage'),
+      rate: num('rate'),
+      product: String(d.get('product')) as ProductId,
+    };
+  }
+
+  function update(): void {
+    form.querySelectorAll<HTMLInputElement>('input[type=range]').forEach((inp) => {
+      const p = ((Number(inp.value) - Number(inp.min)) / (Number(inp.max) - Number(inp.min))) * 100;
+      inp.style.setProperty('--p', `${p}%`);
+      root.querySelector(`[data-out="${inp.name}"]`)!.textContent = `${Number(inp.value).toLocaleString('ko-KR')}${inp.dataset.unit}`;
+    });
+    const v = read();
+    const p = products.find((x) => x.id === v.product)!;
+    const manual = v.people * v.hours * v.wage * DAYS;
+    const saved = manual * (v.rate / 100);
+    const fee = p.monthly * 10000;
+    const net = saved - fee;
+    const build = p.build * 10000;
+    roll('manual', manual);
+    roll('saved', saved);
+    roll('fee', fee);
+    roll('net', net);
+    roll('build', build);
+    r('formula').textContent = `${v.people}명 × ${v.hours}시간 × ${v.wage.toLocaleString('ko-KR')}원 × ${DAYS}일`;
+    const months = net > 0 ? build / net : Infinity;
+    r('payback').textContent = Number.isFinite(months)
+      ? `약 ${months < 1 ? '1개월 이내' : `${Math.ceil(months)}개월`}`
+      : '이 조건에선 회수 어려움 — 더 작은 구성을 추천';
+    return void Object.assign(latest, { ...v, manual, saved, fee, net, build, payback: Number.isFinite(months) ? Math.ceil(months) : null, productName: p.name });
+  }
+  const latest: Record<string, unknown> = {};
+
+  form.addEventListener('input', update);
+  update();
+
+  // 진단(12)으로 계산값 넘기기
+  root.querySelector('[data-calc-go]')!.addEventListener('click', (e) => {
+    e.preventDefault();
+    try {
+      sessionStorage.setItem('knob:calc', JSON.stringify(latest));
+    } catch {
+      /* 저장 불가 환경: 이벤트로만 전달 */
+    }
+    window.dispatchEvent(new CustomEvent('knob:calc', { detail: latest }));
+    scrollToTarget('#diagnosis');
+  });
+</script>

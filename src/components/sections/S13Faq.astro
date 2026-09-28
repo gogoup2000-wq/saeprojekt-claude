@@ -1,5 +1,90 @@
 ---
-import Placeholder from '../Placeholder.astro';
+// 13 FAQ — 문구는 src/data/faq.ts
+import SectionHead from '../SectionHead.astro';
+import { faq } from '../../data/faq';
 ---
 
-<Placeholder id="faq" no="13" title="자주 묻는 질문" note="유지보수, 소유권, 기간, 수정 횟수, 환불 (5단계)" />
+<section id="faq" class="section faq" aria-labelledby="faq-title">
+  <div class="container">
+    <SectionHead id="faq" label="13 / 자주 묻는 질문" title="계약 전에 많이 물어보시는 것" />
+    <div class="list">
+      {faq.map((f, i) => (
+        <details class="item" name="faq" open={i === 0}>
+          <summary>
+            <span class="mono n">Q{i + 1}</span>
+            <span class="qq">{f.q}</span>
+            <span class="icon" aria-hidden="true"></span>
+          </summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .list {
+    max-width: 820px;
+    border-top: 1px solid var(--line);
+  }
+  .item {
+    border-bottom: 1px solid var(--line);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: 1.0625rem;
+    font-weight: 600;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .n {
+    width: 2rem;
+    flex-shrink: 0;
+    font-size: var(--fs-label);
+    font-weight: 400;
+    color: var(--signal);
+  }
+  .qq {
+    flex: 1;
+  }
+  .icon {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+  .icon::before,
+  .icon::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 0;
+    width: 14px;
+    height: 2px;
+    background: var(--muted);
+    transition: transform var(--dur-fast) var(--ease);
+  }
+  .icon::after {
+    transform: rotate(90deg);
+  }
+  .item[open] .icon::after {
+    transform: rotate(0deg);
+  }
+  .item p {
+    margin: 0;
+    padding: 0 2rem 1.5rem 3rem;
+    color: #c9ccd1;
+    line-height: 1.75;
+  }
+  @media (max-width: 767.98px) {
+    .item p {
+      padding: 0 0 1.25rem 3rem;
+    }
+  }
+</style>

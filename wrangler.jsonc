@@ -2,10 +2,24 @@
   // Cloudflare Workers 배포 설정
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "knob-site",
+  "main": "worker/index.ts",
   "compatibility_date": "2026-09-01",
+  "observability": { "enabled": true },
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "404-page"
-  }
-  // 5단계: "main": "src/worker.ts" + D1 바인딩 + 텔레그램 secret 추가 예정
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    // /api/ 로 시작하는 요청만 Worker 코드가 처리
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "knob-leads",
+      // npx wrangler d1 create knob-leads 실행 후 나오는 database_id로 교체
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ]
+  // 텔레그램 비밀값: npx wrangler secret put TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID
 }

@@ -40,7 +40,7 @@ const sms = [
           {agents.map((a, i) => (
             <div class="agent mono" data-agent style={`--a:${i}`}>{a}</div>
           ))}
-          {leads.map((l, i) => (
+          {leads.map((l) => (
             <div class="card" data-card data-kind={l.kind.key}>
               <span class="card-name">{l.name}</span>
               <span class={`card-tag mono k-${l.kind.key}`}>{l.kind.label}</span>
