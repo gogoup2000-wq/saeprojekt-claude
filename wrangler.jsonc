@@ -16,8 +16,8 @@
     {
       "binding": "DB",
       "database_name": "knob-leads",
-      // npx wrangler d1 create knob-leads 실행 후 나오는 database_id로 교체
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      // npx wrangler d1 create knob-leads 로 만든 DB (lhh7987 계정)
+      "database_id": "2df7c2f8-21c3-45bc-aac9-5ba15bd38085",
       "migrations_dir": "migrations"
     }
   ]
