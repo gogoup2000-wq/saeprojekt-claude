@@ -98,11 +98,11 @@ const start = -((products.length - 1) / 2) * DETENT;
   @media (min-width: 860px) {
     .bento {
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto auto;
+      grid-template-rows: repeat(3, auto);
     }
     .t-full {
       grid-column: 2 / 4;
-      grid-row: 1 / 3;
+      grid-row: 1 / 4;
     }
   }
   .tile {
