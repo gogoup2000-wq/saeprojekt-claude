@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro build && wrangler dev",
     "deploy": "astro build && wrangler deploy",
+    "telegram:setup": "node scripts/telegram-setup.mjs",
     "check": "astro check"
   },
   "dependencies": {
