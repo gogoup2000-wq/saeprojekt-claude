@@ -1,0 +1,11 @@
+{
+  // Cloudflare Workers 배포 설정
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "knob-site",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+  // 5단계: "main": "src/worker.ts" + D1 바인딩 + 텔레그램 secret 추가 예정
+}

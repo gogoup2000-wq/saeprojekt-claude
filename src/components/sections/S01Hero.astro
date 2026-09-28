@@ -1,0 +1,63 @@
+---
+// 1단계 자리표시. 2단계에서 노브·가상 사무실·셰이더로 교체.
+---
+
+<section id="hero" class="hero" aria-labelledby="hero-title">
+  <div class="container grid">
+    <div class="copy">
+      <p class="label">01 / hero</p>
+      <h1 id="hero-title">돌리면,<br />돌아갑니다.</h1>
+      <p class="sub">문의 정리, 담당자 배정, 정산까지.<br />사람 한 명 더 뽑기 전에 먼저 돌려보세요.</p>
+    </div>
+    <div class="box">
+      <span class="mono">노브(다이얼) + 가상 사무실 자리 — 2단계</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding-block: calc(var(--header-h) + 3rem) 4rem;
+  }
+  .grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .grid {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+  }
+  h1 {
+    margin: 0.75rem 0 1.5rem;
+    font-size: var(--fs-hero);
+    font-weight: var(--weight-strong);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+  }
+  .sub {
+    margin: 0;
+    max-width: 32rem;
+    color: var(--muted);
+    font-size: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
+  }
+  .box {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    max-width: 440px;
+    width: 100%;
+    justify-self: center;
+    padding: 1.5rem;
+    border: 1px dashed var(--line);
+    border-radius: 50%;
+    background: rgba(21, 23, 27, 0.6);
+    color: var(--muted);
+    font-size: var(--fs-small);
+    text-align: center;
+  }
+</style>

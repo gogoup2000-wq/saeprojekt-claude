@@ -1,0 +1,40 @@
+/* 노브 디자인 토큰 — 색·글꼴·간격·모션 값은 여기서만 바꾼다 */
+:root {
+  /* 색 */
+  --bg: #0a0b0d;
+  --surface: #15171b;
+  --line: #262a30;
+  --text: #ededed;
+  --muted: #8a8f98;
+  --signal: #ff8a1f; /* 신호색 — 한 가지만 */
+  --ok: #3ddc97; /* 성공 상태에만 */
+
+  /* 글꼴 */
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --weight-body: 400;
+  --weight-strong: 800;
+
+  /* 글자 크기 (모바일 기준 → 데스크톱으로 커짐) */
+  --fs-hero: clamp(2.75rem, 1.2rem + 6.4vw, 6rem); /* 데스크톱 72~96px */
+  --fs-h2: clamp(1.75rem, 1.2rem + 2.2vw, 3rem);
+  --fs-body: 1rem;
+  --fs-small: 0.8125rem;
+  --fs-label: 0.75rem;
+
+  /* 간격 */
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --section-y: clamp(5rem, 12vw, 9rem);
+  --maxw: 1200px;
+  --radius: 10px;
+  --header-h: 64px;
+
+  /* 모션 — 곡선은 하나로 통일 */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 180ms; /* 작은 반응 150~250ms */
+  --dur-scene: 750ms; /* 장면 전환 600~900ms */
+
+  /* 배경 질감 */
+  --grid-size: 40px;
+  --grid-line: rgba(237, 237, 237, 0.04); /* 투명도 4% */
+}

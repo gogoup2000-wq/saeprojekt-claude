@@ -1,0 +1,31 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = '노브 — 돌리면, 돌아갑니다',
+  description = '문의 정리, 담당자 배정, 정산까지. 사람 한 명 더 뽑기 전에 먼저 돌려보는 AI 운영 시스템.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0A0B0D" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body id="top">
+    <slot />
+    <script>
+      import { initSmoothScroll } from '../scripts/smooth';
+      initSmoothScroll();
+    </script>
+  </body>
+</html>

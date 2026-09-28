@@ -1,0 +1,60 @@
+---
+// 14 푸터 — 사업자정보 자리. 5단계에서 실제 정보·개인정보처리방침 페이지 연결.
+const year = new Date().getFullYear();
+---
+
+<footer id="footer" class="footer">
+  <div class="container">
+    <p class="logo">노브</p>
+    <dl class="biz mono">
+      <div><dt>상호</dt><dd>—</dd></div>
+      <div><dt>대표자</dt><dd>—</dd></div>
+      <div><dt>사업자등록번호</dt><dd>—</dd></div>
+      <div><dt>주소</dt><dd>—</dd></div>
+      <div><dt>연락처</dt><dd>—</dd></div>
+    </dl>
+    <p class="bottom">
+      <a href="#">개인정보처리방침</a>
+      <span class="mono">© {year} 노브</span>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: 4rem 3rem;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: var(--fs-small);
+  }
+  .logo {
+    margin: 0 0 1.5rem;
+    color: var(--text);
+    font-weight: var(--weight-strong);
+    font-size: 1.25rem;
+  }
+  .biz {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    margin: 0 0 2rem;
+  }
+  .biz div {
+    display: flex;
+    gap: 0.5rem;
+  }
+  dd {
+    margin: 0;
+  }
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .bottom a:hover {
+    color: var(--text);
+  }
+</style>
