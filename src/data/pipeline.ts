@@ -1,4 +1,4 @@
-// 04 작동 원리 — 실제로 쓰는 기술만 적는다. 바뀌면 여기만 수정.
+// 05 작동 원리 — 실제로 쓰는 기술만 적는다. 바뀌면 여기만 수정.
 export interface PipelineNode {
   step: string; // 쉬운 말
   tech: string; // 실제 기술명

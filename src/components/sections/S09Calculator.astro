@@ -1,5 +1,5 @@
 ---
-// 08 비용 계산기 — 월 수작업 비용 vs 노브 비용, 제작비 회수 개월 수
+// 09 비용 계산기 — 월 수작업 비용 vs 노브 비용, 제작비 회수 개월 수
 import SectionHead from '../SectionHead.astro';
 import { products } from '../../data/products';
 
@@ -16,7 +16,7 @@ const sliders = [
   <div class="container">
     <SectionHead
       id="calculator"
-      label="08 / 비용 계산기"
+      label="09 / 비용 계산기"
       title="사람 한 명 더 뽑는 값과 비교해 보세요"
       lead={`우리 회사 숫자를 넣어보세요. 월 근무일은 ${DAYS}일로 계산합니다.`}
     />
@@ -82,8 +82,9 @@ const sliders = [
   .panel {
     padding: clamp(1.25rem, 3vw, 2rem);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: rgba(21, 23, 27, 0.75);
+    border-radius: var(--radius-lg);
+    background: var(--edge), rgba(21, 23, 27, 0.82);
+    box-shadow: var(--shadow-card);
   }
   .inputs {
     display: flex;

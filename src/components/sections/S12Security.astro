@@ -1,5 +1,5 @@
 ---
-// 10 보안·운영 기준 — 계약 직전 불안을 줄이는 기준표
+// 12 보안·운영 기준 — 계약 직전 불안을 줄이는 기준표
 import SectionHead from '../SectionHead.astro';
 import { security, operations } from '../../data/standards';
 
@@ -13,7 +13,7 @@ const groups = [
   <div class="container">
     <SectionHead
       id="security"
-      label="10 / 보안·운영 기준"
+      label="12 / 보안·운영 기준"
       title="고객 DB를 맡기기 전에 확인하실 것"
       lead="오픈하고 끝나는 게 아니라, 오픈한 날부터 운영이 시작됩니다. 지키는 기준을 먼저 공개합니다."
     />
@@ -55,8 +55,9 @@ const groups = [
   .col {
     padding: 1.5rem;
     border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: rgba(21, 23, 27, 0.75);
+    border-radius: var(--radius-lg);
+    background: var(--edge), rgba(21, 23, 27, 0.82);
+    box-shadow: var(--shadow-card);
   }
   .col-title {
     margin: 0 0 1rem;

@@ -5,6 +5,7 @@ export interface Product {
   id: ProductId;
   name: string;
   line: string; // 한 줄 설명
+  fit: string; // 이런 회사에 맞습니다 (초안)
   build: number; // 제작비 (만 원)
   buildFrom: boolean; // true면 '~' (범위 견적)
   buildMax: number; // 진단 견적 범위 상한 (만 원)
@@ -19,6 +20,7 @@ export const products: Product[] = [
     id: 'web-lite',
     name: '노브 웹 라이트',
     line: '문의가 바로 휴대폰으로 오는 1페이지 홈페이지',
+    fit: '홈페이지가 없는 1~2인 매장·사무실. 광고를 켜도 받을 창구가 없을 때.',
     build: 99,
     buildFrom: false,
     buildMax: 99,
@@ -31,6 +33,7 @@ export const products: Product[] = [
     id: 'web-pro',
     name: '노브 웹 프로',
     line: '방문자가 직접 진단하고 상담을 신청하는 홈페이지',
+    fit: '문의는 오는데 상담으로 안 이어질 때. 방문자가 스스로 조건을 고르고 신청하게 만들고 싶을 때.',
     build: 250,
     buildFrom: false,
     buildMax: 250,
@@ -43,6 +46,7 @@ export const products: Product[] = [
     id: 'auto',
     name: '노브 오토',
     line: '광고 문의가 시트·알림·문자까지 알아서 이어지는 연결',
+    fit: '이미 광고·홈페이지가 있고, 문의를 사람이 옮겨 적고 전달하는 데 시간을 쓰고 있을 때.',
     build: 150,
     buildFrom: true,
     buildMax: 250,
@@ -55,6 +59,7 @@ export const products: Product[] = [
     id: 'desk',
     name: '노브 데스크',
     line: '문의 관리·담당자 배정·정산을 한 화면에서',
+    fit: '담당자 3명 이상. 누가 어떤 고객을 맡았는지, 월말 실적이 몇 건인지 바로 안 보일 때.',
     build: 390,
     buildFrom: true,
     buildMax: 550,
@@ -67,6 +72,7 @@ export const products: Product[] = [
     id: 'full',
     name: '노브 풀',
     line: '홈페이지부터 정산까지 한 번에 — 웹 프로 + 오토 + 데스크',
+    fit: '광고 예산이 크고 상담 조직이 있는 회사. 문의 창구부터 정산까지 한 번에 바꾸고 싶을 때.',
     build: 690,
     buildFrom: true,
     buildMax: 950,

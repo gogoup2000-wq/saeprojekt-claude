@@ -1,0 +1,135 @@
+---
+// 푸터 직전 마지막 진단 유도 — 문구는 src/data/promises.ts (ctaPoints)
+import { ctaPoints } from '../data/promises';
+---
+
+<section class="final" aria-labelledby="final-title">
+  <div class="container">
+    <div class="panel reveal">
+      <div class="knob" aria-hidden="true">
+        <span class="ring"></span>
+        <span class="needle"></span>
+      </div>
+      <p class="label">지금 한 번 돌려 보세요</p>
+      <h2 id="final-title">돌리면,<br />돌아갑니다.</h2>
+      <ul>
+        {ctaPoints.map((x) => <li>{x}</li>)}
+      </ul>
+      <a href="#diagnosis" class="btn" data-scroll-link>무료 자동화 진단 시작 <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .final {
+    padding-block: clamp(4rem, 10vw, 7rem);
+  }
+  .panel {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(2.5rem, 7vw, 5rem) clamp(1.5rem, 6vw, 4.5rem);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background:
+      radial-gradient(70% 90% at 85% 50%, rgba(255, 138, 31, 0.16), transparent 60%),
+      var(--edge),
+      var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+  .label {
+    margin: 0 0 1.25rem;
+    color: var(--signal);
+  }
+  h2 {
+    position: relative;
+    margin: 0 0 1.75rem;
+    font-size: var(--fs-hero);
+    font-weight: var(--weight-strong);
+    letter-spacing: -0.045em;
+    line-height: 1.02;
+    background: linear-gradient(180deg, #ffffff 35%, #9ea3aa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  ul {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin: 0 0 2.25rem;
+    padding: 0;
+    list-style: none;
+    color: var(--text-soft);
+  }
+  li::before {
+    content: '✓';
+    margin-right: 0.5rem;
+    color: var(--signal);
+    font-family: var(--font-mono);
+  }
+  .btn {
+    position: relative;
+  }
+
+  /* 오른쪽 장식 노브 — 페이지 첫 화면 노브와 같은 모양, 크게 */
+  .knob {
+    position: absolute;
+    right: clamp(-120px, -6vw, -40px);
+    top: 50%;
+    width: clamp(260px, 34vw, 440px);
+    aspect-ratio: 1;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #2c3037, #111317 70%);
+    box-shadow:
+      0 0 0 1px #2a2e35,
+      0 40px 80px -20px rgba(0, 0, 0, 0.8),
+      inset 0 2px 0 rgba(255, 255, 255, 0.06);
+    opacity: 0.9;
+  }
+  .ring {
+    position: absolute;
+    inset: -18px;
+    border-radius: 50%;
+    background: repeating-conic-gradient(from 0deg, #3a3f47 0 1deg, transparent 1deg 10deg);
+    mask: radial-gradient(circle, transparent 69%, #000 70%, #000 73%, transparent 74%);
+  }
+  .needle {
+    position: absolute;
+    left: 50%;
+    top: 12%;
+    width: 4px;
+    height: 22%;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: var(--signal);
+    box-shadow: 0 0 16px var(--signal);
+    transform-origin: 50% 172%;
+    transform: rotate(-40deg);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .needle {
+        animation: turn linear both;
+        animation-timeline: view();
+        animation-range: entry 10% cover 55%;
+      }
+    }
+  }
+  @keyframes turn {
+    from {
+      transform: rotate(-140deg);
+    }
+    to {
+      transform: rotate(40deg);
+    }
+  }
+  @media (max-width: 767.98px) {
+    .knob {
+      right: -140px;
+      top: 18%;
+      opacity: 0.35;
+    }
+  }
+</style>

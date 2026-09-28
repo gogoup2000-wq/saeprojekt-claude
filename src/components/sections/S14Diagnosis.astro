@@ -1,5 +1,5 @@
 ---
-// 12 무료 자동화 진단 — 한 화면에 한 문항, 노브 모양 진행 게이지, 제출하면 진단 리포트
+// 14 무료 자동화 진단 — 한 화면에 한 문항, 노브 모양 진행 게이지, 제출하면 진단 리포트
 import SectionHead from '../SectionHead.astro';
 import { questions } from '../../data/diagnosis-rules';
 ---
@@ -8,7 +8,7 @@ import { questions } from '../../data/diagnosis-rules';
   <div class="container">
     <SectionHead
       id="diagnosis"
-      label="12 / 무료 자동화 진단"
+      label="14 / 무료 자동화 진단"
       title="10문항이면 우리 회사에 맞는 구성이 나옵니다"
       lead="선택만 하면 됩니다. 약 1분. 끝나면 추천 구성과 견적 범위를 리포트로 바로 보여드립니다."
     />
@@ -114,8 +114,9 @@ import { questions } from '../../data/diagnosis-rules';
     max-width: 820px;
     padding: clamp(1.25rem, 4vw, 2.5rem);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: rgba(21, 23, 27, 0.8);
+    border-radius: var(--radius-lg);
+    background: var(--edge), rgba(21, 23, 27, 0.82);
+    box-shadow: var(--shadow-card);
   }
   .top {
     display: flex;

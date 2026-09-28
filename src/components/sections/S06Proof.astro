@@ -1,5 +1,5 @@
 ---
-// 05 실가동 지표 — src/data/proof.ts 실측값만. 값이 없는 계기판은 표시하지 않는다.
+// 06 실가동 지표 — src/data/proof.ts 실측값만. 값이 없는 계기판은 표시하지 않는다.
 import SectionHead from '../SectionHead.astro';
 import { gauges, screens } from '../../data/proof';
 
@@ -15,7 +15,7 @@ const angle = (v: number, max: number) => -90 + Math.min(1, v / max) * 180;
       <div class="container">
         <SectionHead
           id="proof"
-          label="05 / 실가동 지표"
+          label="06 / 실가동 지표"
           title="샘플이 아닙니다. 지금도 돌아갑니다"
           lead="우리 회사에서 매일 쓰는 시스템의 실측값입니다. 고객 정보는 모두 가렸습니다."
         />

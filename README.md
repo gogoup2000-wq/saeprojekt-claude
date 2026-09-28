@@ -25,6 +25,10 @@ npm run preview    # 배포와 같은 환경(Worker + 로컬 D1) → http://loca
 | `standards.ts` | 제작 단계, 보안·운영 기준 (응답 시간 초안) | — |
 | `pipeline.ts` | 작동 원리 노드별 기술명 | — |
 | `diagnosis-rules.ts` | 진단 10문항·추천 규칙 | — |
+| `industries.ts` | 04 업종별 시나리오 (초안 — 실제 상담 표현으로 다듬기) | — |
+| `compare.ts` | 10 비교표 (초안) | — |
+| `plan-screens.ts` | 08 플랜별 예시 화면의 숫자·목록 (전부 예시값) | — |
+| `promises.ts` | 히어로 아래 약속 띠·마지막 진단 유도 문구 (faq·standards와 맞출 것) | — |
 | `../content/story.md` | 만든 사람 스토리 | — |
 
 실제 화면 이미지는 `public/proof/`(실가동 지표), `public/products/`(상품 타일)에 webp로 넣고 위 파일에 경로를 적으면 됩니다. **고객 이름·연락처는 반드시 가린 뒤 넣기.**
@@ -50,7 +54,7 @@ npm run deploy                                      # (사이트 빌드 후 인�
    (단체방이면 봇을 방에 초대하고 방에서 한 번 말한 뒤 확인. 음수 ID도 그대로 입력)
 
 ### 진단 → 저장 → 알림 테스트
-1. 배포 주소에서 12 무료 자동화 진단을 끝까지 제출
+1. 배포 주소에서 14 무료 자동화 진단을 끝까지 제출
 2. 텔레그램에 `[노브 진단] 회사명 / 이름 / 연락처 / 추천: …` 메시지가 1분 안에 오는지 확인
 3. 저장 확인: `npx wrangler d1 execute knob-leads --remote --command "SELECT diagnosis_no, name, company, recommendation, created_at FROM leads ORDER BY id DESC LIMIT 5"`
 4. 알림이 안 오면: `npx wrangler tail` 실행 후 다시 제출 → 로그에 '텔레그램 전송 실패' 원인이 찍힘
@@ -65,7 +69,7 @@ src/
   pages/privacy.astro, 404.astro
   layouts/Base.astro           공통 HTML·공유 미리보기·유입경로(UTM) 저장
   components/Header.astro      상단 메뉴 + 우측 스크롤 게이지
-  components/sections/         S01~S14 섹션
+  components/sections/         S01~S16 섹션 (04 업종별·10 비교 추가)
   scripts/motion.ts            모션 줄이기·모바일·저사양 감지, 공통 곡선
   scripts/smooth.ts            Lenis + GSAP ScrollTrigger 동기화
   scripts/hero.ts, shader.ts   히어로 노브, 배경 셰이더

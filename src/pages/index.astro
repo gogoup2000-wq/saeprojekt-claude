@@ -1,38 +1,46 @@
 ---
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
+import PromiseStrip from '../components/PromiseStrip.astro';
+import FinalCta from '../components/FinalCta.astro';
 import S01Hero from '../components/sections/S01Hero.astro';
 import S02Monday from '../components/sections/S02Monday.astro';
 import S03Sandbox from '../components/sections/S03Sandbox.astro';
-import S04How from '../components/sections/S04How.astro';
-import S05Proof from '../components/sections/S05Proof.astro';
-import S06Cases from '../components/sections/S06Cases.astro';
-import S07Products from '../components/sections/S07Products.astro';
-import S08Calculator from '../components/sections/S08Calculator.astro';
-import S09Process from '../components/sections/S09Process.astro';
-import S10Security from '../components/sections/S10Security.astro';
-import S11Maker from '../components/sections/S11Maker.astro';
-import S12Diagnosis from '../components/sections/S12Diagnosis.astro';
-import S13Faq from '../components/sections/S13Faq.astro';
-import S14Footer from '../components/sections/S14Footer.astro';
+import S04Industries from '../components/sections/S04Industries.astro';
+import S05How from '../components/sections/S05How.astro';
+import S06Proof from '../components/sections/S06Proof.astro';
+import S07Cases from '../components/sections/S07Cases.astro';
+import S08Products from '../components/sections/S08Products.astro';
+import S09Calculator from '../components/sections/S09Calculator.astro';
+import S10Compare from '../components/sections/S10Compare.astro';
+import S11Process from '../components/sections/S11Process.astro';
+import S12Security from '../components/sections/S12Security.astro';
+import S13Maker from '../components/sections/S13Maker.astro';
+import S14Diagnosis from '../components/sections/S14Diagnosis.astro';
+import S15Faq from '../components/sections/S15Faq.astro';
+import S16Footer from '../components/sections/S16Footer.astro';
 ---
 
 <Base>
   <Header />
   <main>
     <S01Hero />
+    <PromiseStrip />
     <S02Monday />
     <S03Sandbox />
-    <S04How />
-    <S05Proof />
-    <S06Cases />
-    <S07Products />
-    <S08Calculator />
-    <S09Process />
-    <S10Security />
-    <S11Maker />
-    <S12Diagnosis />
-    <S13Faq />
+    <S04Industries />
+    <S05How />
+    <S06Proof />
+    <S07Cases />
+    <S08Products />
+    <S09Calculator />
+    <S10Compare />
+    <S11Process />
+    <S12Security />
+    <S13Maker />
+    <S14Diagnosis />
+    <S15Faq />
+    <FinalCta />
   </main>
-  <S14Footer />
+  <S16Footer />
 </Base>

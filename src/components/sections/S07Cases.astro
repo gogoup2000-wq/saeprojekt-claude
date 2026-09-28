@@ -1,5 +1,5 @@
 ---
-// 06 구축 사례 — 문제 → 설계 → 구축 → 결과. 결과 값이 비어 있는 줄은 표시하지 않는다.
+// 07 구축 사례 — 문제 → 설계 → 구축 → 결과. 결과 값이 비어 있는 줄은 표시하지 않는다.
 import SectionHead from '../SectionHead.astro';
 import { cases } from '../../data/cases';
 
@@ -15,7 +15,7 @@ const list = cases.map((c) => ({
       <div class="container">
         <SectionHead
           id="cases"
-          label="06 / 구축 사례"
+          label="07 / 구축 사례"
           title="문제부터 결과까지, 순서대로 보여드립니다"
           lead="첫 사례는 우리 회사입니다. 직접 겪은 문제를 직접 풀었습니다."
         />
@@ -129,8 +129,9 @@ const list = cases.map((c) => ({
     position: relative;
     padding: 1.25rem;
     border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: rgba(21, 23, 27, 0.75);
+    border-radius: var(--radius-lg);
+    background: var(--edge), rgba(21, 23, 27, 0.82);
+    box-shadow: var(--shadow-card);
   }
   .k {
     display: block;

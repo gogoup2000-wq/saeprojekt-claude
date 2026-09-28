@@ -1,5 +1,6 @@
 ---
 // 섹션 공통 머리: 번호 라벨 + 제목 + 한 줄 설명
+// label은 '07 / 상품' 형식 — 번호와 이름을 나눠 계기판 눈금처럼 표시
 interface Props {
   id: string;
   label: string;
@@ -7,10 +8,15 @@ interface Props {
   lead?: string;
 }
 const { id, label, title, lead } = Astro.props;
+const [no, name] = label.includes(' / ') ? label.split(' / ') : ['', label];
 ---
 
 <header class="shead">
-  <p class="label reveal">{label}</p>
+  <p class="label reveal">
+    {no && <span class="no">{no}</span>}
+    <span class="rule" aria-hidden="true"></span>
+    <span>{name}</span>
+  </p>
   <h2 id={`${id}-title`} class="reveal">{title}</h2>
   {lead && <p class="lead reveal">{lead}</p>}
   <slot />
@@ -18,18 +24,40 @@ const { id, label, title, lead } = Astro.props;
 
 <style>
   .shead {
-    margin-bottom: clamp(2rem, 4vw, 3rem);
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+  }
+  .no {
+    color: var(--signal);
+  }
+  .rule {
+    width: 28px;
+    height: 1px;
+    background: var(--line-strong);
   }
   h2 {
-    margin: 0.5rem 0 0.75rem;
+    margin: 1rem 0 1rem;
+    max-width: 22ch;
     font-size: var(--fs-h2);
     font-weight: var(--weight-strong);
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+    letter-spacing: -0.035em;
+    line-height: 1.12;
+    /* 위에서 아래로 살짝 어두워지는 금속 글자 */
+    background: linear-gradient(180deg, #ffffff 30%, #a9adb4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   .lead {
     margin: 0;
-    max-width: 40rem;
+    max-width: 42rem;
+    font-size: var(--fs-lead);
+    line-height: 1.7;
     color: var(--muted);
   }
 </style>

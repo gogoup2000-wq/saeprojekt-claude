@@ -1,5 +1,5 @@
 ---
-// 09 제작 프로세스 — 배포 로그처럼 한 줄씩 출력
+// 11 제작 프로세스 — 배포 로그처럼 한 줄씩 출력
 import SectionHead from '../SectionHead.astro';
 import { processSteps } from '../../data/standards';
 ---
@@ -8,7 +8,7 @@ import { processSteps } from '../../data/standards';
   <div class="container">
     <SectionHead
       id="process"
-      label="09 / 제작 프로세스"
+      label="11 / 제작 프로세스"
       title="단계마다 문서가 남습니다"
       lead="말로 진행하지 않습니다. 단계가 끝날 때마다 산출물을 드리고, 확인을 받은 뒤 다음으로 넘어갑니다."
     />
@@ -43,8 +43,9 @@ import { processSteps } from '../../data/standards';
 <style>
   .term {
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     background: #07080a;
+    box-shadow: var(--shadow-card);
     overflow: hidden;
   }
   .term-bar {

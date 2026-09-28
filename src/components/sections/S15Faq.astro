@@ -1,12 +1,12 @@
 ---
-// 13 FAQ — 문구는 src/data/faq.ts
+// 15 FAQ — 문구는 src/data/faq.ts
 import SectionHead from '../SectionHead.astro';
 import { faq } from '../../data/faq';
 ---
 
 <section id="faq" class="section faq" aria-labelledby="faq-title">
   <div class="container">
-    <SectionHead id="faq" label="13 / 자주 묻는 질문" title="계약 전에 많이 물어보시는 것" />
+    <SectionHead id="faq" label="15 / 자주 묻는 질문" title="계약 전에 많이 물어보시는 것" />
     <div class="list">
       {faq.map((f, i) => (
         <details class="item" name="faq" open={i === 0}>

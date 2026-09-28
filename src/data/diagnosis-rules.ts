@@ -1,4 +1,4 @@
-// 12 무료 자동화 진단 — 문항과 추천 규칙. 화면(브라우저)과 서버(Worker)가 같은 파일을 쓴다.
+// 14 무료 자동화 진단 — 문항과 추천 규칙. 화면(브라우저)과 서버(Worker)가 같은 파일을 쓴다.
 import { productById, type ProductId } from './products';
 
 export interface Option {

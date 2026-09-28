@@ -166,6 +166,53 @@ html.lenis body {
 
 /* 섹션 공통 */
 .section {
+  position: relative;
   padding-block: var(--section-y);
   border-top: 1px solid var(--line);
+}
+/* 섹션 경계선 가운데에 옅은 신호색 빛 — 장면이 바뀌는 지점 표시 */
+.section::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: min(560px, 70%);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(255, 138, 31, 0.55), transparent);
+  pointer-events: none;
+}
+
+/* 공통 카드 — 금속 패널: 윗면 빛 반사 + 깊은 그림자 */
+.card {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--edge), rgba(21, 23, 27, 0.82);
+  box-shadow: var(--shadow-card);
+}
+
+/* 주 버튼 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--signal);
+  color: #111;
+  font-weight: 700;
+  box-shadow: 0 0 0 1px rgba(255, 138, 31, 0.4), 0 12px 32px -8px rgba(255, 138, 31, 0.5);
+  transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(255, 138, 31, 0.6), 0 16px 40px -8px rgba(255, 138, 31, 0.65);
+}
+.btn .arrow {
+  transition: transform var(--dur-fast) var(--ease);
+}
+.btn:hover .arrow {
+  transform: translateX(3px);
 }

@@ -1,8 +1,10 @@
 ---
 const links = [
+  { href: '#industries', label: '업종별' },
   { href: '#how', label: '작동 원리' },
-  { href: '#cases', label: '사례' },
-  { href: '#products', label: '상품' },
+  { href: '#products', label: '상품·가격' },
+  { href: '#compare', label: '비교' },
+  { href: '#faq', label: 'FAQ' },
 ];
 ---
 
@@ -86,7 +88,8 @@ const links = [
     box-shadow: 0 0 0 4px rgba(255, 138, 31, 0.18);
   }
 
-  @media (max-width: 767.98px) {
+  /* 메뉴 5개가 들어갈 폭이 안 되면 숨김 (로고 + 진단 버튼만) */
+  @media (max-width: 959.98px) {
     nav {
       display: none;
     }

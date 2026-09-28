@@ -1,0 +1,294 @@
+---
+// 04 업종별 시나리오 — 방문자가 자기 업종을 골라 '지금 장면 → 켠 뒤 흐름 → 맞는 구성'을 본다. 문구는 src/data/industries.ts
+import SectionHead from '../SectionHead.astro';
+import { industries } from '../../data/industries';
+import { productById, buildLabel, won } from '../../data/products';
+---
+
+<section id="industries" class="section ind" aria-labelledby="industries-title" data-ind>
+  <div class="container">
+    <SectionHead
+      id="industries"
+      label="04 / 업종별"
+      title="우리 업종에서는 이렇게 바뀝니다"
+      lead="업종마다 문의가 새는 곳이 다릅니다. 가까운 업종을 골라 보세요."
+    />
+
+    <div class="tabs" role="tablist" aria-label="업종 선택">
+      {industries.map((d, i) => (
+        <button
+          type="button"
+          role="tab"
+          class="tab"
+          id={`ind-tab-${d.id}`}
+          aria-controls={`ind-${d.id}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          data-tab
+        >
+          {d.tab}
+        </button>
+      ))}
+    </div>
+
+    {industries.map((d, i) => {
+      const p = productById(d.product);
+      return (
+        <div class="panel card" id={`ind-${d.id}`} role="tabpanel" aria-labelledby={`ind-tab-${d.id}`} hidden={i !== 0} data-panel>
+          <p class="who"><span class="label">이런 회사</span>{d.who}</p>
+          <div class="grid">
+            <div class="col now">
+              <p class="label">지금</p>
+              <ul>
+                {d.now.map((x) => <li>{x}</li>)}
+              </ul>
+            </div>
+            <div class="col flow">
+              <p class="label">노브를 켜면 · 문의 한 건의 흐름</p>
+              <ol>
+                {d.flow.map((x, j) => (
+                  <li style={`--i:${j}`}>
+                    <span class="dot mono">{String(j + 1).padStart(2, '0')}</span>
+                    <span>{x}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <aside class="col pick">
+              <p class="label">보통 맞는 구성</p>
+              <p class="pname">{p.name}</p>
+              <p class="pwhy">{d.why}</p>
+              <p class="pprice mono">
+                <strong>{buildLabel(p)}</strong>
+                <span>월 {won(p.monthly)} · {p.period}</span>
+              </p>
+              <a href="#diagnosis" class="plink" data-scroll-link>우리 회사로 진단하기 <span aria-hidden="true">→</span></a>
+            </aside>
+          </div>
+          <p class="fine"><span class="tag-example">예시 시나리오</span> 실제 구성은 진단과 상담 후 확정합니다.</p>
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* 모바일: 옆으로 밀어서 선택 */
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab {
+    flex-shrink: 0;
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(21, 23, 27, 0.6);
+    color: var(--muted);
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+  }
+  .tab:hover {
+    color: var(--text);
+    border-color: var(--line-strong);
+  }
+  .tab[aria-selected='true'] {
+    color: #111;
+    background: var(--text);
+    border-color: var(--text);
+    font-weight: 600;
+  }
+
+  .panel {
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+  }
+  .panel:not([hidden]) {
+    animation: panel-in var(--dur-scene) var(--ease);
+  }
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  .who {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.9rem;
+    margin: 0 0 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .grid {
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 960px) {
+    .grid {
+      grid-template-columns: 1fr 1.15fr 0.9fr;
+      gap: 2.25rem;
+    }
+  }
+  .col > .label {
+    margin: 0 0 1rem;
+  }
+  ul,
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* 지금: 흐릿한 수작업 장면 */
+  .now li {
+    position: relative;
+    padding: 0.2rem 0 0.9rem 1.5rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .now li::before {
+    content: '×';
+    position: absolute;
+    left: 0;
+    top: 0.15rem;
+    font-family: var(--font-mono);
+    color: #5b6068;
+  }
+
+  /* 켠 뒤: 신호가 흐르는 순서 */
+  .flow ol {
+    position: relative;
+  }
+  .flow ol::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 16px;
+    bottom: 16px;
+    width: 1px;
+    background: linear-gradient(var(--signal), rgba(255, 138, 31, 0.1));
+  }
+  .flow li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.4rem 0;
+  }
+  .dot {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 138, 31, 0.5);
+    border-radius: 50%;
+    background: var(--bg);
+    color: var(--signal);
+    font-size: 0.6875rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .panel:not([hidden]) .flow li {
+      animation: step-in var(--dur-scene) var(--ease) both;
+      animation-delay: calc(var(--i) * 90ms);
+    }
+  }
+  @keyframes step-in {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+  }
+
+  /* 추천 구성 카드 */
+  .pick {
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 138, 31, 0.35);
+    border-radius: var(--radius);
+    background: radial-gradient(120% 80% at 100% 0%, rgba(255, 138, 31, 0.1), transparent 60%), var(--surface-2);
+    align-self: start;
+  }
+  .pname {
+    margin: 0 0 0.4rem;
+    font-size: 1.25rem;
+    font-weight: var(--weight-strong);
+    letter-spacing: -0.02em;
+  }
+  .pwhy {
+    margin: 0 0 1.1rem;
+    color: var(--text-soft);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+  }
+  .pprice {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin: 0 0 1.1rem;
+  }
+  .pprice strong {
+    font-size: 1.375rem;
+    color: var(--signal);
+  }
+  .pprice span {
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+  .plink {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 2px;
+    transition: border-color var(--dur-fast) var(--ease);
+  }
+  .plink:hover {
+    border-color: var(--signal);
+  }
+  .fine {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 1.75rem 0 0;
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-ind]');
+  if (root) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+    const select = (i: number) => {
+      tabs.forEach((t, j) => {
+        t.setAttribute('aria-selected', String(i === j));
+        t.tabIndex = i === j ? 0 : -1;
+      });
+      panels.forEach((p, j) => (p.hidden = i !== j));
+      tabs[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        const next = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+        select(next);
+        tabs[next].focus();
+      });
+    });
+  }
+</script>
