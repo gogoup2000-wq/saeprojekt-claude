@@ -5,6 +5,11 @@
   "main": "worker/index.ts",
   "compatibility_date": "2026-09-01",
   "observability": { "enabled": true },
+  // 도메인 연결 (Cloudflare에서 구매한 gonobe.com — 인증서 자동 발급)
+  "routes": [
+    { "pattern": "gonobe.com", "custom_domain": true },
+    { "pattern": "www.gonobe.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
