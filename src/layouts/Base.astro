@@ -20,6 +20,10 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- 모션 허용이면 html에 motion-ok 클래스 → 등장 전 요소를 미리 숨길 수 있음 -->
+    <script is:inline>
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion-ok');
+    </script>
   </head>
   <body id="top">
     <slot />

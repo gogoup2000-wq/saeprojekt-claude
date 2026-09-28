@@ -40,3 +40,26 @@ export function canUseShader(): boolean {
 export function onMotionPreferenceChange(cb: () => void): void {
   window.matchMedia(reduceQuery).addEventListener('change', cb);
 }
+
+/** GSAP 가속·감속 곡선 — CSS --ease(cubic-bezier(0.22,1,0.36,1), easeOutQuint)와 같은 곡선 */
+export const EASE = 'power4.out';
+/** 작은 반응 / 장면 전환 시간(초) */
+export const DUR = { fast: 0.18, scene: 0.75 } as const;
+
+/** 요소가 화면에 들어오면 한 번 실행 (ScrollTrigger 없이 가볍게) */
+export function onceVisible(el: Element, cb: () => void, threshold = 0.35): void {
+  const io = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        io.disconnect();
+        cb();
+      }
+    },
+    { threshold },
+  );
+  io.observe(el);
+}
+
+/** 숫자를 1,234 형태로 */
+export const fmt = (n: number, digits = 0): string =>
+  n.toLocaleString('ko-KR', { maximumFractionDigits: digits, minimumFractionDigits: digits });

@@ -7,4 +7,5 @@ export default defineConfig({
   site: 'https://knob.kr',
   output: 'static',
   build: { inlineStylesheets: 'auto' },
+  devToolbar: { enabled: false },
 });
