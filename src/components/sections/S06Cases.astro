@@ -1,5 +1,207 @@
 ---
-import Placeholder from '../Placeholder.astro';
+// 06 구축 사례 — 문제 → 설계 → 구축 → 결과. 결과 값이 비어 있는 줄은 표시하지 않는다.
+import SectionHead from '../SectionHead.astro';
+import { cases } from '../../data/cases';
+
+const list = cases.map((c) => ({
+  ...c,
+  results: c.results.filter((r) => r.before && r.after),
+}));
 ---
 
-<Placeholder id="cases" no="06" title="구축 사례" note="문제 → 설계 → 구축 → 결과 4단 카드 (4단계)" />
+{
+  list.length > 0 && (
+    <section id="cases" class="section cases" aria-labelledby="cases-title" data-cases>
+      <div class="container">
+        <SectionHead
+          id="cases"
+          label="06 / 구축 사례"
+          title="문제부터 결과까지, 순서대로 보여드립니다"
+          lead="첫 사례는 우리 회사입니다. 직접 겪은 문제를 직접 풀었습니다."
+        />
+
+        {list.length > 1 && (
+          <div class="tabs" role="tablist" aria-label="구축 사례">
+            {list.map((c, i) => (
+              <button
+                type="button"
+                role="tab"
+                class="tab mono"
+                id={`case-tab-${c.id}`}
+                aria-controls={`case-${c.id}`}
+                aria-selected={i === 0 ? 'true' : 'false'}
+                tabindex={i === 0 ? 0 : -1}
+                data-tab
+              >
+                {c.tab}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {list.map((c, i) => (
+          <div
+            class="panel"
+            id={`case-${c.id}`}
+            role={list.length > 1 ? 'tabpanel' : undefined}
+            aria-labelledby={list.length > 1 ? `case-tab-${c.id}` : undefined}
+            hidden={i !== 0}
+            data-panel
+          >
+            <p class="client mono">{c.client}</p>
+            <ol class="steps" style={`--n:${c.results.length ? 4 : 3}`}>
+              <li class="step">
+                <span class="k mono">01 문제</span>
+                <p>{c.problem}</p>
+              </li>
+              <li class="step">
+                <span class="k mono">02 설계</span>
+                <p>{c.design}</p>
+              </li>
+              <li class="step">
+                <span class="k mono">03 구축</span>
+                <p>{c.build}</p>
+                <ul class="stack">
+                  {c.stack.map((s) => <li class="mono">{s}</li>)}
+                </ul>
+              </li>
+              {c.results.length > 0 && (
+                <li class="step result">
+                  <span class="k mono">04 결과</span>
+                  <dl>
+                    {c.results.map((r) => (
+                      <div>
+                        <dt>{r.label}</dt>
+                        <dd class="mono">
+                          <s>{r.before}</s> <span aria-hidden="true">→</span> <b>{r.after}</b>
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </li>
+              )}
+            </ol>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .tab {
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: none;
+    color: var(--muted);
+    font-size: var(--fs-label);
+    transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  }
+  .tab[aria-selected='true'] {
+    border-color: var(--signal);
+    color: var(--signal);
+  }
+  .client {
+    margin: 0 0 1rem;
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+  .steps {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 960px) {
+    .steps {
+      grid-template-columns: repeat(var(--n), 1fr);
+    }
+  }
+  .step {
+    position: relative;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(21, 23, 27, 0.75);
+  }
+  .k {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: var(--fs-label);
+    color: var(--signal);
+  }
+  .step p {
+    margin: 0;
+    font-size: 0.9375rem;
+    word-break: keep-all;
+  }
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .stack li {
+    padding: 2px 7px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    color: var(--muted);
+  }
+  .result {
+    border-color: rgba(255, 138, 31, 0.4);
+  }
+  dl {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+  }
+  dt {
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+  dd {
+    margin: 0.2rem 0 0;
+  }
+  dd s {
+    color: var(--muted);
+  }
+  dd b {
+    color: var(--signal);
+    font-size: 1.75rem;
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-cases]');
+  if (root) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+    const select = (i: number) => {
+      tabs.forEach((t, j) => {
+        t.setAttribute('aria-selected', String(i === j));
+        t.tabIndex = i === j ? 0 : -1;
+      });
+      panels.forEach((p, j) => (p.hidden = i !== j));
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        const next = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+        select(next);
+        tabs[next].focus();
+      });
+    });
+  }
+</script>

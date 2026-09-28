@@ -1,0 +1,35 @@
+---
+// 섹션 공통 머리: 번호 라벨 + 제목 + 한 줄 설명
+interface Props {
+  id: string;
+  label: string;
+  title: string;
+  lead?: string;
+}
+const { id, label, title, lead } = Astro.props;
+---
+
+<header class="shead">
+  <p class="label reveal">{label}</p>
+  <h2 id={`${id}-title`} class="reveal">{title}</h2>
+  {lead && <p class="lead reveal">{lead}</p>}
+  <slot />
+</header>
+
+<style>
+  .shead {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  h2 {
+    margin: 0.5rem 0 0.75rem;
+    font-size: var(--fs-h2);
+    font-weight: var(--weight-strong);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .lead {
+    margin: 0;
+    max-width: 40rem;
+    color: var(--muted);
+  }
+</style>

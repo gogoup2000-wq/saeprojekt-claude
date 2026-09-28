@@ -50,6 +50,16 @@ video {
   max-width: 100%;
 }
 
+h1,
+h2,
+h3,
+p,
+li,
+dd {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -152,4 +162,10 @@ html.lenis body {
 }
 .lenis [data-lenis-prevent] {
   overscroll-behavior: contain;
+}
+
+/* 섹션 공통 */
+.section {
+  padding-block: var(--section-y);
+  border-top: 1px solid var(--line);
 }
