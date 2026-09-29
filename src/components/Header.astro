@@ -1,0 +1,171 @@
+---
+const links = [
+  { href: '#industries', label: '업종별' },
+  { href: '#how', label: '작동 원리' },
+  { href: '#products', label: '상품·가격' },
+  { href: '#compare', label: '비교' },
+  { href: '#faq', label: 'FAQ' },
+];
+---
+
+<header class="site-header" data-header>
+  <div class="bar container">
+    <a href="#top" class="logo" data-scroll-link aria-label="노브 처음으로">노브</a>
+    <nav aria-label="주요 메뉴">
+      <ul>
+        {links.map((l) => (
+          <li><a href={l.href} data-scroll-link>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <a href="#diagnosis" class="cta" data-scroll-link>무료 자동화 진단</a>
+  </div>
+</header>
+
+<!-- 우측 얇은 스크롤 진행 게이지 -->
+<div class="progress" aria-hidden="true"><span class="progress-fill"></span></div>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    height: var(--header-h);
+    border-bottom: 1px solid transparent;
+    transition:
+      background-color var(--dur-fast) var(--ease),
+      border-color var(--dur-fast) var(--ease),
+      backdrop-filter var(--dur-fast) var(--ease);
+  }
+  /* 스크롤 후: 반투명 유리 패널 */
+  .site-header.is-scrolled {
+    background-color: rgba(21, 23, 27, 0.62);
+    border-bottom-color: var(--line);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+  .bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .logo {
+    font-weight: var(--weight-strong);
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+  nav {
+    margin-right: auto;
+  }
+  nav ul {
+    display: flex;
+    gap: 1.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  nav a {
+    font-size: 0.9375rem;
+    color: var(--muted);
+    transition: color var(--dur-fast) var(--ease);
+  }
+  nav a:hover {
+    color: var(--text);
+  }
+  .cta {
+    flex-shrink: 0;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    background: var(--signal);
+    color: #111;
+    font-weight: 700;
+    font-size: 0.875rem;
+    transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+  }
+  .cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 4px rgba(255, 138, 31, 0.18);
+  }
+
+  /* 메뉴 5개가 들어갈 폭이 안 되면 숨김 (로고 + 진단 버튼만) */
+  @media (max-width: 959.98px) {
+    nav {
+      display: none;
+    }
+    .bar {
+      justify-content: space-between;
+    }
+  }
+
+  .progress {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 51;
+    width: 3px;
+    height: 100vh;
+    background: rgba(38, 42, 48, 0.6);
+    pointer-events: none;
+  }
+  .progress-fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--signal);
+    transform-origin: top;
+    transform: scaleY(var(--progress, 0));
+  }
+  /* 지원 브라우저는 CSS만으로 게이지 이동 (모션 1층) */
+  @supports (animation-timeline: scroll()) {
+    .progress-fill {
+      animation: progress-grow linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+  @keyframes progress-grow {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+</style>
+
+<script>
+  import { scrollToTarget } from '../scripts/smooth';
+
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const fill = document.querySelector<HTMLElement>('.progress-fill');
+  const cssTimeline = CSS.supports('animation-timeline: scroll()');
+
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const y = window.scrollY;
+    header?.classList.toggle('is-scrolled', y > 8);
+    if (!cssTimeline && fill) {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      fill.style.setProperty('--progress', String(max > 0 ? y / max : 0));
+    }
+  }
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    },
+    { passive: true },
+  );
+  update();
+
+  // 메뉴 클릭 → 해당 섹션으로 부드럽게 이동
+  document.querySelectorAll<HTMLAnchorElement>('[data-scroll-link]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const hash = a.getAttribute('href');
+      if (!hash?.startsWith('#')) return;
+      e.preventDefault();
+      scrollToTarget(hash === '#top' ? document.body : hash);
+      history.replaceState(null, '', hash === '#top' ? location.pathname : hash);
+    });
+  });
+</script>

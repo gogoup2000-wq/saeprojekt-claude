@@ -1,0 +1,1137 @@
+---
+// 08 상품 — 플랜별 실제 화면(예시). 플랜마다 화면 '형태'가 다르다:
+// 웹 라이트=휴대폰 2대 / 웹 프로=밝은 홈페이지+문구 수정 / 오토=연결도 / 데스크=칸반 / 풀=경영 리포트
+// 880×540 고정 캔버스로 그리고, 폭에 맞춰 통째로 축소한다(스크립트는 S08Products).
+// 예시 데이터: src/data/plan-screens.ts / 실제 캡처가 있으면 products.ts의 media가 우선.
+import { products } from '../data/products';
+import { autoPipe, board, deskKpis, fullFunnel, fullWeeks, settlement, capabilities, planCaps } from '../data/plan-screens';
+
+const maxWeek = Math.max(...fullWeeks);
+const maxLead = Math.max(...fullFunnel.map((f) => f.lead));
+const totalLead = fullFunnel.reduce((a, f) => a + f.lead, 0);
+const totalContract = fullFunnel.reduce((a, f) => a + f.contract, 0);
+const rate = ((totalContract / totalLead) * 100).toFixed(1);
+const url: Record<string, string> = {
+  'web-lite': '고객 휴대폰 · 대표님 휴대폰',
+  'web-pro': 'oo-math.kr',
+  auto: '노브 오토 · 오늘 연결 상태',
+  desk: 'admin.oo-consulting.kr / 리드 보드',
+  full: 'admin.oo-consulting.kr / 9월 운영 리포트',
+};
+const nodeIcon = ['M', '▦', '✈', '✉', '↺'];
+---
+
+<div class="screens" data-screens>
+  {products.map((p, i) => (
+    <figure class="screen" data-screen={i} hidden={i !== 0} aria-label={`${p.name} 예시 화면`}>
+      <!-- 이 플랜에 켜지는 기능 -->
+      <ul class="caps" aria-label="포함 기능">
+        {capabilities.map((c, j) => (
+          <li class:list={{ on: planCaps[p.id].includes(j) }}>
+            <span class="sr-only">{planCaps[p.id].includes(j) ? '포함: ' : '미포함: '}</span>{c}
+          </li>
+        ))}
+      </ul>
+      <div class="chrome">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="url mono">{url[p.id]}</span>
+        <span class="tag-example">예시 화면</span>
+      </div>
+      <div class="viewport" data-viewport>
+        <div class="canvas" data-canvas>
+          {p.media.length > 0 ? (
+            <img src={p.media[0]} alt={`${p.name} 실제 화면`} loading="lazy" class="shot" />
+          ) : p.id === 'web-lite' ? (
+            /* ── 웹 라이트: 휴대폰 2대 — 고객이 보는 홈페이지 → 대표님 휴대폰 알림 ── */
+            <div class="lite">
+              <div class="dev">
+                <p class="dev-cap mono">고객이 보는 화면</p>
+                <div class="phone light">
+                  <span class="notch"></span>
+                  <p class="lt-brand">OO인테리어</p>
+                  <div class="lt-hero">
+                    <p class="lt-h">30평대 아파트<br />전체 리모델링</p>
+                    <p class="lt-s">평수·예산만 남기시면<br />실측 일정을 잡아 드립니다.</p>
+                  </div>
+                  <div class="lt-f"><span>이름</span><b>김OO</b></div>
+                  <div class="lt-f"><span>연락처</span><b>010-····-1284</b></div>
+                  <div class="lt-f two"><div><span>평수</span><b>32평</b></div><div><span>예산</span><b>3~4천만</b></div></div>
+                  <span class="lt-btn">무료 상담 신청</span>
+                </div>
+              </div>
+
+              <div class="flow" aria-hidden="true">
+                <span class="flow-line"><i></i></span>
+                <p class="mono">신청 즉시</p>
+              </div>
+
+              <div class="dev">
+                <p class="dev-cap mono">대표님 휴대폰</p>
+                <div class="phone dark">
+                  <span class="notch"></span>
+                  <p class="lock-time">9:42</p>
+                  <p class="lock-date">9월 28일 월요일</p>
+                  <div class="push on">
+                    <p class="push-app"><span class="ic">✈</span>텔레그램 · 지금</p>
+                    <p class="push-t">[새 상담 신청] 김OO</p>
+                    <p class="push-b">010-····-1284 · 32평 · 3~4천만</p>
+                  </div>
+                  <div class="push">
+                    <p class="push-app"><span class="ic">✈</span>텔레그램 · 38분 전</p>
+                    <p class="push-t">[새 상담 신청] 이OO</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : p.id === 'web-pro' ? (
+            /* ── 웹 프로: 밝은 홈페이지 — 방문자 진단 결과 + 문구 수정 창 ── */
+            <div class="pro">
+              <nav class="pr-nav">
+                <b>OO수학</b>
+                <span>반 안내</span><span>체험수업</span><span>오시는 길</span>
+                <em>상담 신청</em>
+              </nav>
+              <div class="pr-body">
+                <div class="pr-hero">
+                  <p class="pr-eyebrow">초·중등 수학 전문</p>
+                  <p class="pr-h">서술형까지 잡는<br />초중등 수학</p>
+                  <p class="pr-s">1분 진단으로 우리 아이에게 맞는 반을 찾아 드립니다.</p>
+                </div>
+                <div class="pr-card">
+                  <p class="pr-step">AI 상담 진단 · 완료</p>
+                  <div class="pr-bar"><span></span></div>
+                  <p class="pr-k">진단 결과</p>
+                  <p class="pr-r">중2 서술형 집중반</p>
+                  <ul>
+                    <li>서술형 풀이에서 감점이 큼</li>
+                    <li>개념은 잡혀 있음 → 심화 전 단계</li>
+                  </ul>
+                  <span class="pr-cta">토요일 10시 체험수업 신청</span>
+                </div>
+              </div>
+              <div class="cms">
+                <p class="cms-t"><span class="dot"></span>사이트 관리 · 원장님</p>
+                <label><span>메인 제목</span><b>서술형까지 잡는 초중등 수학<i class="caret"></i></b></label>
+                <label><span>체험수업</span><b>매주 토 10:00 · 선착순 6명</b></label>
+                <span class="cms-save">저장하면 바로 반영</span>
+              </div>
+            </div>
+          ) : p.id === 'auto' ? (
+            /* ── 오토: 연결도 — 문의 한 건이 사람 손 없이 흘러가는 길 ── */
+            <div class="auto">
+              <p class="au-title">사람이 옮겨 적지 않습니다</p>
+              <p class="au-sub">오늘 들어온 문의가 지나간 길</p>
+              <div class="rail">
+                <span class="wire"><i></i><i></i><i></i></span>
+                {autoPipe.map((s, j) => (
+                  <div class:list={['node', { last: j === autoPipe.length - 1 }]}>
+                    <span class="ico">{nodeIcon[j]}</span>
+                    <b>{s.step}</b>
+                    <span class="cnt mono">{s.count}<small>건</small></span>
+                  </div>
+                ))}
+              </div>
+              <div class="outs">
+                <div class="out">
+                  <p class="o-k mono">구글시트 · 새 줄</p>
+                  <p class="o-row mono"><span>09:42</span><span>김OO</span><span>···1284</span><span>메타</span></p>
+                </div>
+                <div class="out">
+                  <p class="o-k mono">텔레그램 → 이선임</p>
+                  <p>[신규문의] 김OO / 정책자금</p>
+                </div>
+                <div class="out">
+                  <p class="o-k mono">문자 → 고객</p>
+                  <p>문의가 접수되었습니다. 담당 이선임이 오늘 중 연락드립니다.</p>
+                </div>
+                <div class="out ok">
+                  <p class="o-k mono">광고 성과 전송</p>
+                  <p>계약 1건 → 메타 광고에 전달</p>
+                </div>
+              </div>
+            </div>
+          ) : p.id === 'desk' ? (
+            /* ── 데스크: 칸반 — 상태 칸 사이로 고객 카드를 옮기면 배정·집계가 따라온다 ── */
+            <div class="desk">
+              <div class="dk-top">
+                <p class="dk-title">리드 보드</p>
+                <div class="dk-kpis">
+                  {deskKpis.map((k) => (
+                    <span><em>{k.label}</em><b class:list={{ good: k.ok }}>{k.value}</b>{k.unit}</span>
+                  ))}
+                </div>
+              </div>
+              <div class="cols4">
+                {board.map((c, ci) => (
+                  <div class="col">
+                    <p class="col-h"><span>{c.col}</span><b class="mono">{c.cards.length}</b></p>
+                    {c.cards.map((k, ki) => (
+                      <div class:list={['kc', { drag: ci === 2 && ki === 1, won: c.col === '계약' }]}>
+                        <p class="kc-n">{k.name}<span class="mono">{k.time}</span></p>
+                        <p class="kc-t">{k.topic}</p>
+                        <span class="av">{k.staff}</span>
+                      </div>
+                    ))}
+                    {ci === 3 && <div class="drop">여기로 옮기면 정산에 자동 반영</div>}
+                  </div>
+                ))}
+              </div>
+              <p class="dk-foot mono">새 문의 → 순번대로 자동 배정(라운드로빈) · 담당자는 자기 고객만 보임</p>
+            </div>
+          ) : (
+            /* ── 풀: 경영 리포트 — 웹 프로 + 오토 + 데스크가 합쳐진 결과 ── */
+            <div class="full">
+              <div class="f-head">
+                <p class="f-title">9월 운영 리포트</p>
+                <span class="f-layers mono">웹 프로 + 오토 + 데스크 · 매월 1일 자동 생성</span>
+              </div>
+              <div class="big">
+                <div><em>문의</em><b>{totalLead}</b></div>
+                <div><em>계약</em><b>{totalContract}</b></div>
+                <div><em>계약률</em><b>{rate}<small>%</small></b></div>
+                <div><em>광고로 보낸 전환</em><b class="sig">{totalContract}</b></div>
+              </div>
+              <div class="f-grid">
+                <div class="f-card">
+                  <p class="f-t">유입별 문의 → 계약</p>
+                  {fullFunnel.map((f) => (
+                    <div class="fr">
+                      <span class="fr-n">{f.channel}</span>
+                      <span class="fr-bar"><i class="l" style={`width:${(f.lead / maxLead) * 100}%`}><i class="k" style={`width:${(f.contract / f.lead) * 100}%`}></i></i></span>
+                      <span class="fr-v mono">{f.lead}<b> → {f.contract}</b></span>
+                    </div>
+                  ))}
+                </div>
+                <div class="f-card">
+                  <p class="f-t">주별 문의 (최근 8주)</p>
+                  <div class="bars">
+                    {fullWeeks.map((w, j) => (
+                      <span class:list={{ last: j === fullWeeks.length - 1 }} style={`height:${(w / maxWeek) * 100}%`}></span>
+                    ))}
+                  </div>
+                </div>
+                <div class="f-card">
+                  <p class="f-t">담당자별 정산</p>
+                  {settlement.map((s) => (
+                    <p class="st"><span>{s.staff}</span><span class="mono">{s.contract}건</span><b class="mono">{s.amount}</b></p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </figure>
+  ))}
+  <p class="swipe mono" aria-hidden="true">← 화면을 옆으로 밀어서 보세요 →</p>
+  <p class="note">예시 화면입니다. 이름·연락처는 가린 형태이며, 숫자는 실제 고객사 데이터가 아닙니다.</p>
+</div>
+
+<style>
+  .screen {
+    margin: 0;
+  }
+  .screen:not([hidden]) .chrome,
+  .screen:not([hidden]) .viewport {
+    animation: scr-in var(--dur-scene) var(--ease);
+  }
+  @keyframes scr-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  /* 포함 기능 줄 */
+  .caps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin: 0 0 0.9rem;
+    padding: 0;
+    list-style: none;
+  }
+  .caps li {
+    padding: 0.25rem 0.55rem;
+    white-space: nowrap;
+    border: 1px dashed var(--line);
+    border-radius: 999px;
+    color: #4f545c;
+    font-size: 0.6875rem;
+    transition: all var(--dur-fast) var(--ease);
+  }
+  .caps li.on {
+    border-style: solid;
+    border-color: rgba(255, 138, 31, 0.55);
+    background: rgba(255, 138, 31, 0.1);
+    color: var(--text);
+  }
+  .caps li.on::before {
+    content: '●';
+    margin-right: 0.35rem;
+    font-size: 0.5rem;
+    vertical-align: 2px;
+    color: var(--signal);
+  }
+
+  .chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--line-strong);
+    border-bottom-color: var(--line);
+    border-radius: 14px 14px 0 0;
+    background: #121418;
+  }
+  .dots {
+    display: flex;
+    gap: 5px;
+  }
+  .dots i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #2c3036;
+  }
+  .url {
+    flex: 1;
+    min-width: 0;
+    padding: 0.2rem 0.7rem;
+    border-radius: 6px;
+    background: #0b0c0f;
+    color: var(--muted);
+    font-size: 0.6875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* 880×540 캔버스를 폭에 맞춰 축소 */
+  .viewport {
+    position: relative;
+    height: calc(540px * var(--s, 1));
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-top: 0;
+    border-radius: 0 0 14px 14px;
+    background: #0b0c0f;
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9);
+  }
+  /* 휴대폰: 너무 작아지지 않게 최소 배율을 두고 옆으로 밀어서 보기 */
+  .viewport:global(.pan) {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+  .viewport::before {
+    content: '';
+    display: block;
+    width: calc(880px * var(--s, 1));
+    height: 1px;
+  }
+  .swipe {
+    display: none;
+    margin: 0.5rem 0 0;
+    font-size: var(--fs-label);
+    color: var(--signal);
+  }
+  .screens:global(.can-pan) .swipe {
+    display: block;
+  }
+  .canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 880px;
+    height: 540px;
+    transform: scale(var(--s, 1));
+    transform-origin: 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--text);
+    overflow: hidden;
+  }
+  .canvas p {
+    margin: 0;
+  }
+  .shot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .note {
+    margin: 0.75rem 0 0;
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+
+  /* ═════ 웹 라이트: 휴대폰 2대 ═════ */
+  .lite {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    height: 100%;
+    background:
+      radial-gradient(50% 60% at 50% 50%, rgba(255, 138, 31, 0.1), transparent 70%),
+      #0c0d10;
+  }
+  .dev {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .dev-cap {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .phone {
+    position: relative;
+    width: 232px;
+    height: 460px;
+    padding: 34px 16px 16px;
+    border-radius: 36px;
+    box-shadow: 0 0 0 7px #1d2025, 0 0 0 8px #33373e, 0 30px 60px -10px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+  }
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    width: 74px;
+    height: 20px;
+    margin-left: -37px;
+    border-radius: 12px;
+    background: #000;
+  }
+  .phone.light {
+    background: #f7f6f3;
+    color: #17191d;
+  }
+  .lt-brand {
+    font-weight: 800;
+    font-size: 12px;
+  }
+  .lt-hero {
+    margin: 14px -16px 14px;
+    padding: 18px 16px;
+    background: linear-gradient(135deg, #2b2621, #4a3a2a);
+    color: #fff;
+  }
+  .lt-h {
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.2 !important;
+    letter-spacing: -0.03em;
+  }
+  .lt-s {
+    margin-top: 8px !important;
+    font-size: 11px;
+    opacity: 0.8;
+  }
+  .lt-f {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 7px;
+    padding: 7px 10px;
+    border: 1px solid #e2dfd8;
+    border-radius: 8px;
+    background: #fff;
+  }
+  .lt-f span {
+    font-size: 9.5px;
+    color: #8a877f;
+  }
+  .lt-f b {
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .lt-f.two {
+    flex-direction: row;
+    gap: 10px;
+  }
+  .lt-f.two div {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+  .lt-btn {
+    display: block;
+    margin-top: 10px;
+    padding: 11px;
+    border-radius: 10px;
+    background: var(--signal);
+    color: #111;
+    font-weight: 800;
+    text-align: center;
+  }
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .flow p {
+    font-size: 11px;
+    color: var(--signal);
+  }
+  .flow-line {
+    position: relative;
+    width: 110px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 138, 31, 0.6), transparent);
+  }
+  .flow-line i {
+    position: absolute;
+    top: -3px;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--signal);
+    box-shadow: 0 0 12px var(--signal);
+  }
+  .phone.dark {
+    background:
+      radial-gradient(120% 70% at 30% 0%, #3b2a1c, transparent 60%),
+      linear-gradient(180deg, #14161a, #0b0c0f);
+  }
+  .lock-time {
+    margin-top: 18px !important;
+    text-align: center;
+    font-size: 52px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+  .lock-date {
+    margin-bottom: 26px !important;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-soft);
+  }
+  .push {
+    margin-bottom: 8px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    opacity: 0.6;
+  }
+  .push.on {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 0 0 1px rgba(255, 138, 31, 0.55), 0 0 24px rgba(255, 138, 31, 0.25);
+  }
+  .push-app {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--text-soft);
+  }
+  .ic {
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+    background: #2aa3e6;
+    color: #fff;
+    font-size: 9px;
+  }
+  .push-t {
+    margin-top: 4px !important;
+    font-weight: 700;
+    font-size: 12.5px;
+  }
+  .push-b {
+    font-size: 11px;
+    color: var(--text-soft);
+  }
+
+  /* ═════ 웹 프로: 밝은 홈페이지 ═════ */
+  .pro {
+    position: relative;
+    height: 100%;
+    background: #f7f6f3;
+    color: #17191d;
+  }
+  .pr-nav {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 16px 36px;
+    border-bottom: 1px solid #e6e3dc;
+    background: #fff;
+    font-size: 12.5px;
+    color: #5b5850;
+  }
+  .pr-nav b {
+    margin-right: 12px;
+    font-size: 16px;
+    font-weight: 900;
+    color: #17191d;
+  }
+  .pr-nav em {
+    margin-left: auto;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: #17191d;
+    color: #fff;
+    font-style: normal;
+    font-weight: 700;
+  }
+  .pr-body {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 30px;
+    padding: 36px;
+  }
+  .pr-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    color: #c2620a;
+  }
+  .pr-h {
+    margin-top: 12px !important;
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.15 !important;
+    letter-spacing: -0.045em;
+  }
+  .pr-s {
+    margin-top: 14px !important;
+    font-size: 14px;
+    color: #5b5850;
+  }
+  .pr-card {
+    padding: 22px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 1px 0 #e6e3dc, 0 20px 40px -18px rgba(40, 30, 10, 0.35);
+  }
+  .pr-step {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1f9d68;
+  }
+  .pr-bar {
+    height: 4px;
+    margin: 8px 0 16px;
+    border-radius: 2px;
+    background: #ece9e2;
+  }
+  .pr-bar span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    background: #1f9d68;
+  }
+  .pr-k {
+    font-size: 11px;
+    color: #8a877f;
+  }
+  .pr-r {
+    margin: 2px 0 10px !important;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+  }
+  .pr-card ul {
+    margin: 0 0 16px;
+    padding-left: 16px;
+    font-size: 12.5px;
+    color: #4a4841;
+  }
+  .pr-cta {
+    display: block;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--signal);
+    font-weight: 800;
+    text-align: center;
+  }
+  /* 원장님이 보는 문구 수정 창 — 사이트 위에 떠 있음 */
+  .cms {
+    position: absolute;
+    left: 36px;
+    bottom: 26px;
+    width: 400px;
+    padding: 16px;
+    border-radius: 14px;
+    background: #15171b;
+    color: var(--text);
+    box-shadow: 0 0 0 1px #2a2e35, 0 30px 60px -20px rgba(0, 0, 0, 0.7);
+  }
+  .cms-t {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px !important;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ok);
+  }
+  .cms label {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .cms label:first-of-type {
+    border-color: var(--signal);
+  }
+  .cms label b {
+    font-weight: 500;
+    color: var(--text);
+  }
+  .caret {
+    display: inline-block;
+    width: 1.5px;
+    height: 13px;
+    margin-left: 2px;
+    vertical-align: -2px;
+    background: var(--signal);
+  }
+  .cms-save {
+    display: block;
+    margin-top: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--text);
+    color: #111;
+    font-size: 11.5px;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  /* ═════ 오토: 연결도 ═════ */
+  .auto {
+    height: 100%;
+    padding: 34px 40px;
+    background:
+      linear-gradient(to right, rgba(237, 237, 237, 0.03) 1px, transparent 1px) 0 0 / 22px 22px,
+      linear-gradient(to bottom, rgba(237, 237, 237, 0.03) 1px, transparent 1px) 0 0 / 22px 22px,
+      #0c0d10;
+  }
+  .au-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .au-sub {
+    margin-top: 4px !important;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .rail {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 22px;
+    margin: 36px 0 34px;
+  }
+  .wire {
+    position: absolute;
+    top: 34px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 138, 31, 0.2), rgba(255, 138, 31, 0.7), rgba(61, 220, 151, 0.6));
+  }
+  .wire i {
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--signal);
+    box-shadow: 0 0 14px var(--signal);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .wire i {
+      animation: packet 3.2s linear infinite;
+    }
+    .wire i:nth-child(2) {
+      animation-delay: 1.07s;
+    }
+    .wire i:nth-child(3) {
+      animation-delay: 2.14s;
+    }
+  }
+  .wire i:nth-child(2) {
+    left: 33%;
+  }
+  .wire i:nth-child(3) {
+    left: 66%;
+  }
+  @keyframes packet {
+    from {
+      left: 0;
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    to {
+      left: 100%;
+      opacity: 0;
+    }
+  }
+  .node {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+  .ico {
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    margin-bottom: 6px;
+    border: 1px solid rgba(255, 138, 31, 0.5);
+    border-radius: 18px;
+    background: linear-gradient(180deg, #1d2025, #121418);
+    box-shadow: 0 0 0 6px #0c0d10, 0 10px 30px -10px rgba(255, 138, 31, 0.4);
+    color: var(--signal);
+    font-size: 24px;
+  }
+  .node.last .ico {
+    border-color: rgba(61, 220, 151, 0.6);
+    color: var(--ok);
+  }
+  .node b {
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .cnt {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .cnt small {
+    margin-left: 2px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .outs {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1.3fr 1fr;
+    gap: 10px;
+  }
+  .out {
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #15171b;
+    font-size: 12px;
+    color: var(--text-soft);
+  }
+  .out.ok {
+    border-color: rgba(61, 220, 151, 0.35);
+  }
+  .o-k {
+    margin-bottom: 6px !important;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .o-row {
+    display: flex;
+    gap: 8px;
+    padding: 5px 7px;
+    border-radius: 4px;
+    background: rgba(61, 220, 151, 0.1);
+    font-size: 11px;
+    color: var(--text);
+  }
+
+  /* ═════ 데스크: 칸반 ═════ */
+  .desk {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 22px 24px;
+    background: #0f1114;
+  }
+  .dk-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .dk-title {
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .dk-kpis {
+    display: flex;
+    gap: 8px;
+  }
+  .dk-kpis span {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    padding: 6px 11px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #15171b;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .dk-kpis em {
+    font-style: normal;
+  }
+  .dk-kpis b {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--text);
+  }
+  .dk-kpis b.good {
+    color: var(--ok);
+  }
+  .cols4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    flex: 1;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 12px;
+    background: #14161a;
+  }
+  .col-h {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px !important;
+    font-weight: 700;
+    font-size: 12.5px;
+  }
+  .col-h b {
+    padding: 0 7px;
+    border-radius: 999px;
+    background: #22262c;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .kc {
+    position: relative;
+    padding: 11px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: linear-gradient(180deg, #1c1f24, #17191d);
+  }
+  .kc-n {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+  }
+  .kc-n span {
+    font-size: 10.5px;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .kc-t {
+    margin-top: 2px !important;
+    font-size: 11.5px;
+    color: var(--text-soft);
+  }
+  .av {
+    position: absolute;
+    right: 10px;
+    bottom: 9px;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #2c3036;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  /* 옮기는 중인 카드 */
+  .kc.drag {
+    border-color: var(--signal);
+    /* 계약 칸의 '여기로 옮기면' 자리 위에 떠 있게 */
+    transform: translate(150px, 4px) rotate(3deg);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--signal);
+    z-index: 2;
+  }
+  .kc.won {
+    border-color: rgba(61, 220, 151, 0.45);
+  }
+  .drop {
+    display: grid;
+    place-items: center;
+    height: 62px;
+    border: 1px dashed rgba(255, 138, 31, 0.6);
+    border-radius: 10px;
+    background: rgba(255, 138, 31, 0.05);
+    font-size: 11px;
+    color: var(--signal);
+  }
+  .dk-foot {
+    margin-top: 12px !important;
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+
+  /* ═════ 풀: 경영 리포트 ═════ */
+  .full {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    padding: 24px 26px;
+    background:
+      radial-gradient(60% 50% at 100% 0%, rgba(255, 138, 31, 0.1), transparent 70%),
+      #0f1114;
+  }
+  .f-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .f-title {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .f-layers {
+    padding: 4px 10px;
+    border: 1px solid rgba(61, 220, 151, 0.4);
+    border-radius: 999px;
+    color: var(--ok);
+    font-size: 10.5px;
+  }
+  .big {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #14161a;
+  }
+  .big div {
+    padding: 16px 20px;
+  }
+  .big div + div {
+    border-left: 1px solid var(--line);
+  }
+  .big em {
+    display: block;
+    font-style: normal;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .big b {
+    font-family: var(--font-mono);
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .big b.sig {
+    color: var(--signal);
+  }
+  .big small {
+    font-size: 16px;
+    color: var(--muted);
+  }
+  .f-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 12px;
+    flex: 1;
+  }
+  .f-card {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #14161a;
+  }
+  .f-t {
+    margin-bottom: 14px !important;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text-soft);
+  }
+  .fr {
+    display: grid;
+    grid-template-columns: 60px 1fr 70px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    font-size: 12px;
+  }
+  .fr-bar {
+    height: 10px;
+  }
+  .fr-bar .l {
+    display: block;
+    height: 100%;
+    border-radius: 5px;
+    background: #2e3238;
+  }
+  .fr-bar .k {
+    display: block;
+    height: 100%;
+    border-radius: 5px;
+    background: var(--signal);
+  }
+  .fr-v {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .fr-v b {
+    color: var(--signal);
+  }
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 7px;
+    flex: 1;
+  }
+  .bars span {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, #4a4f57, #2a2e35);
+  }
+  .bars span.last {
+    background: linear-gradient(180deg, var(--signal), rgba(255, 138, 31, 0.3));
+  }
+  .st {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid #1f2227;
+    font-size: 12px;
+  }
+  .st span:nth-child(2) {
+    color: var(--muted);
+  }
+</style>

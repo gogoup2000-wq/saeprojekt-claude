@@ -1,0 +1,30 @@
+{
+  // Cloudflare Workers 배포 설정
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "knob-site",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "observability": { "enabled": true },
+  // 도메인 연결 (Cloudflare에서 구매한 gonobe.com — 인증서 자동 발급)
+  "routes": [
+    { "pattern": "gonobe.com", "custom_domain": true },
+    { "pattern": "www.gonobe.com", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    // /api/ 로 시작하는 요청만 Worker 코드가 처리
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "knob-leads",
+      // npx wrangler d1 create knob-leads 로 만든 DB (lhh7987 계정)
+      "database_id": "2df7c2f8-21c3-45bc-aac9-5ba15bd38085",
+      "migrations_dir": "migrations"
+    }
+  ]
+  // 텔레그램 비밀값: npx wrangler secret put TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID
+}

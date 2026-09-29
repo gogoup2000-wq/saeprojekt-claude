@@ -1,0 +1,71 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = '노브 — 돌리면, 돌아갑니다',
+  description = '문의 정리, 담당자 배정, 정산까지. 사람 한 명 더 뽑기 전에 먼저 돌려보는 AI 운영 시스템.',
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0A0B0D" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- 공유 미리보기 (카톡·페이스북·슬랙) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="노브" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- 모션 허용이면 html에 motion-ok 클래스 → 등장 전 요소를 미리 숨길 수 있음 -->
+    <script is:inline>
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion-ok');
+    </script>
+  </head>
+  <body id="top">
+    <slot />
+    <script>
+      import { initSmoothScroll } from '../scripts/smooth';
+      initSmoothScroll();
+
+      // 유입경로 저장 (처음 들어온 광고 정보를 진단 제출 때 함께 보냄)
+      try {
+        const q = new URLSearchParams(location.search);
+        const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'];
+        const hit: Record<string, string> = {};
+        keys.forEach((k) => {
+          const v = q.get(k);
+          if (v) hit[k] = v.slice(0, 120);
+        });
+        if (!sessionStorage.getItem('knob:utm')) {
+          if (document.referrer && !document.referrer.startsWith(location.origin)) hit.referrer = document.referrer.slice(0, 120);
+          hit.landing = location.pathname;
+          sessionStorage.setItem('knob:utm', JSON.stringify(hit));
+        } else if (Object.keys(hit).length) {
+          sessionStorage.setItem('knob:utm', JSON.stringify({ ...JSON.parse(sessionStorage.getItem('knob:utm')!), ...hit }));
+        }
+      } catch {
+        /* 저장 불가 환경은 건너뜀 */
+      }
+    </script>
+  </body>
+</html>

@@ -30,3 +30,8 @@ tmp/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Astro / Cloudflare
+.astro/
+.wrangler/
+.dev.vars

@@ -1,0 +1,182 @@
+---
+// 11 제작 프로세스 — 배포 로그처럼 한 줄씩 출력
+import SectionHead from '../SectionHead.astro';
+import { processSteps } from '../../data/standards';
+---
+
+<section id="process" class="section process" aria-labelledby="process-title" data-process>
+  <div class="container">
+    <SectionHead
+      id="process"
+      label="11 / 제작 프로세스"
+      title="단계마다 문서가 남습니다"
+      lead="말로 진행하지 않습니다. 단계가 끝날 때마다 산출물을 드리고, 확인을 받은 뒤 다음으로 넘어갑니다."
+    />
+
+    <div class="term">
+      <div class="term-bar">
+        <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="mono">knob deploy --project 고객사</span>
+      </div>
+      <ol class="lines mono">
+        {processSteps.map((s) => (
+          <li class="line" data-line>
+            <span class="prompt">$</span>
+            <span class="step">step {s.no}</span>
+            <span class="name">{s.name}</span>
+            <span class="leader" aria-hidden="true"></span>
+            <span class="period">{s.period}</span>
+            <span class="arrow" aria-hidden="true">→</span>
+            <span class="out">{s.output}</span>
+          </li>
+        ))}
+        <li class="line done" data-line>
+          <span class="ok">✓</span>
+          <span>deployed</span>
+          <span class="cursor" aria-hidden="true"></span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .term {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: #07080a;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--fs-label);
+    color: var(--muted);
+  }
+  .lights {
+    display: flex;
+    gap: 5px;
+  }
+  .lights i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line);
+  }
+  .lines {
+    margin: 0;
+    padding: 1.25rem 1.25rem 1.5rem;
+    list-style: none;
+    font-size: 0.875rem;
+  }
+  .line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+  }
+  :global(.motion-ok) .line {
+    opacity: 0;
+  }
+  .prompt {
+    color: var(--muted);
+  }
+  .step {
+    color: var(--signal);
+    white-space: nowrap;
+  }
+  .name {
+    white-space: nowrap;
+  }
+  .leader {
+    flex: 1;
+    min-width: 1rem;
+    border-bottom: 1px dotted var(--line);
+    transform: translateY(-4px);
+  }
+  .period {
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .arrow {
+    color: var(--muted);
+  }
+  .out {
+    min-width: 9.5rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .done {
+    margin-top: 0.5rem;
+    color: var(--ok);
+  }
+  .ok {
+    font-weight: 700;
+  }
+  .cursor {
+    width: 8px;
+    height: 1em;
+    background: var(--text);
+    transform: translateY(2px);
+    animation: caret 1s steps(1) infinite;
+  }
+  @keyframes caret {
+    50% { opacity: 0; }
+  }
+
+  @media (max-width: 767.98px) {
+    .lines {
+      font-size: 0.8125rem;
+      padding: 1rem;
+    }
+    .line:not(.done) {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.15rem 0.6rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #14161a;
+    }
+    .leader,
+    .arrow {
+      display: none;
+    }
+    .name {
+      grid-column: 2 / 4;
+      grid-row: 1;
+      white-space: normal;
+    }
+    .step {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .period {
+      grid-column: 3;
+      grid-row: 2;
+    }
+    .out {
+      grid-column: 2 / 4;
+      min-width: 0;
+      white-space: normal;
+    }
+    .out::before {
+      content: '→ ';
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from '../../scripts/smooth';
+  import { canAnimate, onceVisible } from '../../scripts/motion';
+
+  const root = document.querySelector<HTMLElement>('[data-process]')!;
+  const lines = root.querySelectorAll<HTMLElement>('[data-line]');
+  if (canAnimate()) {
+    onceVisible(root.querySelector('.term')!, () => {
+      gsap.to(lines, { opacity: 1, duration: 0.01, stagger: 0.32, ease: 'none' });
+    }, 0.4);
+  }
+</script>

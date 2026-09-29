@@ -1,0 +1,144 @@
+---
+// 12 보안·운영 기준 — 계약 직전 불안을 줄이는 기준표
+import SectionHead from '../SectionHead.astro';
+import { security, operations } from '../../data/standards';
+
+const groups = [
+  { title: '보안', items: security },
+  { title: '운영', items: operations },
+];
+---
+
+<section id="security" class="section security" aria-labelledby="security-title" data-security>
+  <div class="container">
+    <SectionHead
+      id="security"
+      label="12 / 보안·운영 기준"
+      title="고객 DB를 맡기기 전에 확인하실 것"
+      lead="오픈하고 끝나는 게 아니라, 오픈한 날부터 운영이 시작됩니다. 지키는 기준을 먼저 공개합니다."
+    />
+
+    <div class="cols">
+      {groups.map((g) => (
+        <div class="col">
+          <p class="col-title mono">{g.title}</p>
+          <ul>
+            {g.items.map((it) => (
+              <li data-check>
+                <span class="box" aria-hidden="true">
+                  <svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" pathLength="1" /></svg>
+                </span>
+                <div>
+                  <strong>{it.title}</strong>
+                  <p>{it.desc}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+    <p class="note mono">응답 시간은 영업일(평일 10:00~18:00) 기준입니다.</p>
+  </div>
+</section>
+
+<style>
+  .cols {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 860px) {
+    .cols {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .col {
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--edge), rgba(21, 23, 27, 0.82);
+    box-shadow: var(--shadow-card);
+  }
+  .col-title {
+    margin: 0 0 1rem;
+    font-size: var(--fs-label);
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 0.9rem;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--line);
+  }
+  li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .box {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border: 1px solid var(--ok);
+    border-radius: 5px;
+    background: rgba(61, 220, 151, 0.12);
+    transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+  }
+  .box svg {
+    width: 14px;
+    height: 14px;
+  }
+  .box path {
+    fill: none;
+    stroke: var(--ok);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.35s var(--ease);
+  }
+  :global(.motion-ok) li:not(.is-checked) .box {
+    border-color: var(--line);
+    background: transparent;
+  }
+  :global(.motion-ok) li:not(.is-checked) .box path {
+    stroke-dashoffset: 1;
+  }
+  strong {
+    font-size: 1rem;
+  }
+  li p {
+    margin: 0.2rem 0 0;
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+  .note {
+    margin: 1rem 0 0;
+    font-size: var(--fs-label);
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  import { canAnimate, onceVisible } from '../../scripts/motion';
+
+  const root = document.querySelector<HTMLElement>('[data-security]')!;
+  if (canAnimate()) {
+    root.querySelectorAll<HTMLElement>('.col').forEach((col) => {
+      onceVisible(col, () => {
+        col.querySelectorAll<HTMLElement>('[data-check]').forEach((li, i) => {
+          setTimeout(() => li.classList.add('is-checked'), 150 + i * 180);
+        });
+      });
+    });
+  }
+</script>
